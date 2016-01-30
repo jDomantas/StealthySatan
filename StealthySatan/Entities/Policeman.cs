@@ -96,6 +96,7 @@ namespace StealthySatan.Entities
                 }
                 else
                 {
+                    DistanceWalked = 0;
                     LookTime--;
                     if (LookTime <= 0)
                     {
@@ -112,6 +113,7 @@ namespace StealthySatan.Entities
                 if (TimeSpentChecking >= 400 + Map.Random.Next(400))
                 {
                     CurrentStrategy = OriginalStrategy;
+                    DistanceWalked = 0;
                 }
                 else
                 {
@@ -123,6 +125,7 @@ namespace StealthySatan.Entities
                             LookTime = 200 + Map.Random.Next(100);
                             Facing = Facing == Direction.Left ? Direction.Right : Direction.Left;
                         }
+                        DistanceWalked = 0;
                     }
                     else
                     {
@@ -142,7 +145,15 @@ namespace StealthySatan.Entities
 
         public override void Draw(SpriteBatch sb)
         {
-            sb.Draw(Resources.Graphics.Pixel, GetScreenBounds(), Facing == Direction.Left ? Color.Blue : Color.Green);
+            var rect = new Rectangle(
+                   (int)Math.Round((Position.X - Width) * Map.ViewScale),
+                   (int)Math.Round((Position.Y - Height * 0.59) * Map.ViewScale),
+                   (int)Math.Round(Width * 2.7 * Map.ViewScale),
+                   (int)Math.Round(Width * 2.7 / 600 * 512 * Map.ViewScale));
+            
+            sb.Draw(
+                DistanceWalked < 0.001 ? Resources.Graphics.ManStand : Resources.Graphics.ManWalk[(int)Math.Floor(DistanceWalked * 2) % 8],
+                rect, null, Color.White, 0, Vector2.Zero, Facing == Direction.Left ? SpriteEffects.FlipHorizontally : SpriteEffects.None, 0);
         }
 
         public override void AllarmTriggered(Vector location)
