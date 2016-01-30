@@ -41,9 +41,29 @@ namespace StealthySatan
             Random = new Random((int)DateTime.Now.Ticks);
 
             GuardsToSpawn = 0;
+            
 
+            Entities.Add(PlayerEntity = new Player(this));
+
+            InitMap(createFrom);
+            AddMapObjects();
+
+            //Entities.Add(new Policeman(this, new Vector(10, 15.4), 4, 13));
+            //Entities.Add(new Policeman(this, new Vector(45, 15.4)));
+            //Entities.Add(new Policeman(this, new Vector(30, 24.4)));
+
+            //Entities.Add(new Civilian(this, new Vector(10, 15.4)));
+            //Entities.Add(new Civilian(this, new Vector(45, 15.4)));
+            //Entities.Add(new Civilian(this, new Vector(30, 24.4)));
+            //
+            //AddPairOfStairaces(new Vector(30, 6), new Vector(30, 15));
+            //AddPairOfStairaces(new Vector(2, 15), new Vector(2, 24));
+        }
+
+        private void InitMap(Texture2D texture)
+        {
             Color[] textureData = new Color[WidthInTiles * HeightInTiles];
-            createFrom.GetData(textureData);
+            texture.GetData(textureData);
             for (int x = 0; x < WidthInTiles; x++)
                 for (int y = 0; y < HeightInTiles; y++)
                     if (textureData[x + y * WidthInTiles] == new Color(127, 127, 127))
@@ -67,26 +87,18 @@ namespace StealthySatan
                     }
                     else if (textureData[x + y * WidthInTiles] == new Color(237, 28, 36))
                     {
-                        
+
                         Tiles[x, y] = new Tile(Tile.BackType.Wall, Tile.BlockType.None, Tile.BlockType.Lamp);
                         if (x > 0 && x < WidthInTiles - 1 &&
                             textureData[x + y * WidthInTiles + 1] == new Color(237, 28, 36) &&
                             textureData[x + y * WidthInTiles - 1] == new Color(237, 28, 36))
                             LitAreas.Add(new LitArea(x + 0.6, y + 0.4, 5.5, 2.3, 8));
                     }
+        }
 
+        private void AddMapObjects()
+        {
 
-            Entities.Add(PlayerEntity = new Player(this));
-            //Entities.Add(new Policeman(this, new Vector(10, 15.4), 4, 13));
-            //Entities.Add(new Policeman(this, new Vector(45, 15.4)));
-            //Entities.Add(new Policeman(this, new Vector(30, 24.4)));
-
-            Entities.Add(new Civilian(this, new Vector(10, 15.4)));
-            Entities.Add(new Civilian(this, new Vector(45, 15.4)));
-            Entities.Add(new Civilian(this, new Vector(30, 24.4)));
-
-            AddPairOfStairaces(new Vector(30, 6), new Vector(30, 15));
-            AddPairOfStairaces(new Vector(2, 15), new Vector(2, 24));
         }
 
         private void AddPairOfStairaces(Vector pos1, Vector pos2)
