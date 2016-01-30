@@ -69,17 +69,15 @@ namespace StealthySatan.Entities
             {
                 if (Facing == Direction.Left)
                 {
-                    if (Position.X <= PatrolXLeft || MoveHorizontal(-MoveSpeed*0.7))
-                    {
+                    DistanceWalked += MoveSpeed * 0.7;
+                    if (Position.X <= PatrolXLeft || MoveHorizontal(-MoveSpeed * 0.7))
                         Facing = Direction.Right;
-                    }
                 }
                 else
                 {
-                    if (Position.X >= PatrolXRight || MoveHorizontal(MoveSpeed*0.7))
-                    {
+                    DistanceWalked += MoveSpeed * 0.7;
+                    if (Position.X >= PatrolXRight || MoveHorizontal(MoveSpeed * 0.7))
                         Facing = Direction.Left;
-                    }
                 }
             }
             else if (CurrentStrategy == Strategy.LookAround)
@@ -88,11 +86,13 @@ namespace StealthySatan.Entities
                 {
                     Facing = Direction.Right;
                     MoveHorizontal(MoveSpeed);
+                    DistanceWalked += MoveSpeed;
                 }
                 else if (Position.X > StartX + 0.5)
                 {
                     Facing = Direction.Left;
                     MoveHorizontal(-MoveSpeed);
+                    DistanceWalked += MoveSpeed;
                 }
                 else
                 {
@@ -132,6 +132,7 @@ namespace StealthySatan.Entities
                         else
                             Facing = Direction.Right;
                         MoveHorizontal(s * MoveSpeed * 1.5);
+                        DistanceWalked += MoveSpeed * 1.5;
                         LookTime = 40 + Map.Random.Next(20);
                     }
                 }

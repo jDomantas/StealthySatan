@@ -31,27 +31,26 @@ namespace StealthySatan
 
         public virtual void DrawBackground(SpriteBatch sb, int x, int y)
         {
+            int index = -1;
             switch (Back)
             {
-                case BackType.Ventilation:
-                    sb.Draw(Resources.Graphics.Tiles, new Rectangle(
-                        (int)((x - 0.2) * Map.ViewScale), 
-                        (int)((y - 0.2) * Map.ViewScale), 
-                        (int)Map.ViewScale, 
-                        (int)Map.ViewScale),
-                        new Rectangle(0, 0, 25, 25), Color.White);
-                    break;
+                case BackType.None: return;
+                case BackType.Ventilation: index = 0; break;
+                case BackType.Wall: index = 1; break;
+                default: throw new System.Exception("no");
+            }
 
-                case BackType.Wall:
-                    sb.Draw(Resources.Graphics.Tiles, new Rectangle(
+            if (index != 0 && index != 1)
+            {
+                throw new System.Exception("also no");
+            }
+
+            sb.Draw(Resources.Graphics.Tiles, new Rectangle(
                         (int)((x - 0.2) * Map.ViewScale),
                         (int)((y - 0.2) * Map.ViewScale),
                         (int)Map.ViewScale,
                         (int)Map.ViewScale),
-                        new Rectangle(30, 0, 25, 25), Color.White);
-                    break;
-
-            }
+                        new Rectangle(index * 30, 0, 25, 25), Color.White);
         }
 
         public virtual void DrawBackgroundLayer(SpriteBatch sb, int x, int y)
