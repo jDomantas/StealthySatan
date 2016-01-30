@@ -37,6 +37,10 @@ namespace StealthySatan.Entities
             Facing = Direction.Left;
         }
 
+        public void Kill() {
+            Removed = true;
+        }
+
         public virtual void Update() { }
 
         /// <summary>
@@ -199,6 +203,8 @@ namespace StealthySatan.Entities
 
         public bool CheckPlayerVisibility()
         {
+            if (Map.PlayerEntity.CurrentDisguise != Player.Disguise.Player)
+                return false;
             if (!Map.PlayerEntity.InForeground)
                 return false;
             if (Map.PlayerEntity.Position.X + Map.PlayerEntity.Width / 2 > Position.X + Width / 2 && Facing == Direction.Left)
@@ -219,5 +225,13 @@ namespace StealthySatan.Entities
         {
 
         }
+
+        public bool DoesCollide(Entity other)
+        {
+            return Position.X <= other.Position.X + other.Width &&
+                   Position.Y <= other.Position.Y + other.Height &&
+                   other.Position.X <= Position.X + Width &&
+                   other.Position.Y <= Position.Y + Height;
+        } 
     }
 }

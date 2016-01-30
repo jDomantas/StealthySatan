@@ -136,6 +136,7 @@ namespace StealthySatan.Entities
                     }
                 }
             }
+            MoveVertical(0.5);
         }
 
         public override void Draw(SpriteBatch sb)

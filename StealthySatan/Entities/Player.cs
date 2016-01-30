@@ -9,16 +9,33 @@ namespace StealthySatan.Entities
 {
     class Player : Entity
     {
+        public enum Disguise { Player, Invisible, Civilian, Policeman }
         private const double Gravity = 0.01;
         private const double MoveSpeed = 0.1;
         private const double JumpPower = 0.255;
         private Vector Velocity;
         private bool LightImmune;
+        public Disguise CurrentDisguise { get; private set; }
 
         public Player(Map map) : base(map, 0.9, 0.9)
         {
             Velocity = Vector.Zero;
             Position = new Vector(5, 5);
+            CurrentDisguise = Disguise.Player;
+        }
+
+        private void CheckForPossesions()
+        {
+            Entity col = Map.GetIntersectingEntity(this);
+            if (col == null)
+                return;
+            if (col is Policeman)
+            {
+                CurrentDisguise = Disguise.Policeman;
+                //to do: kill col
+                col.Kill();
+            }
+            
         }
 
         public override void Update()
@@ -28,6 +45,8 @@ namespace StealthySatan.Entities
 
             if (InForeground)
             {
+                if (CurrentDisguise == Disguise.Player)
+                    CheckForPossesions();
                 LightImmune = false;
 
                 // gravity, platformer physics
@@ -47,7 +66,7 @@ namespace StealthySatan.Entities
                 else
                     DistanceWalked = 0;
 
-                if (OnGround && InputHandler.IsTyped(InputHandler.Key.Up))
+                if (OnGround && InputHandler.IsTyped(InputHandler.Key.Up) && CurrentDisguise == Disguise.Player)
                     Velocity.Y = -JumpPower;
 
                 Velocity.Y += Gravity;
@@ -74,21 +93,51 @@ namespace StealthySatan.Entities
                     toEnter = toEnter.Other;
                     Position = new Vector(
                         toEnter.Location.X + Staircase.Width / 2 - Width / 2, 
-                        toEnter.Location.Y + Staircase.Height / 2 - Height / 2);
+                        toEnter.Location.Y + Staircase.Height - Height);
 
-                    InForeground = false;
+                    InForeground = (CurrentDisguise != Disguise.Player);
                     LightImmune = true;
                 }
             }
 
-            if (InputHandler.IsTyped(InputHandler.Key.Hide) && (!InForeground || !Map.IntersectsObjects(this)))
-                InForeground = !InForeground;
+
+            if (InputHandler.IsTyped(InputHandler.Key.Hide))
+            {
+                if ((!InForeground || !Map.IntersectsObjects(this)) && CurrentDisguise == Disguise.Player)
+                    InForeground = !InForeground;
+                else if (CurrentDisguise != Disguise.Player && CurrentDisguise != Disguise.Invisible)
+                {
+                    CurrentDisguise = Disguise.Player;
+                    // to do: corpses n animations n shit
+                }
+            }
+                
 
             base.Update();
         }
 
+        public void DrawAsPoliceman(SpriteBatch sb)
+        {
+            var rect = new Rectangle(
+                (int)Math.Round((Position.X - 0.35) * Map.ViewScale),
+                (int)Math.Round((Position.Y - 1.4) * Map.ViewScale),
+                (int)Math.Round(1.6 * Map.ViewScale),
+                (int)Math.Round(2.3 * Map.ViewScale));
+            sb.Draw(Resources.Graphics.Pixel, rect, Facing == Direction.Left ? Color.Blue : Color.Green);
+        }
+
         public override void Draw(SpriteBatch sb)
         {
+            switch(CurrentDisguise)
+            {
+                case Disguise.Policeman:
+                    DrawAsPoliceman(sb);
+                    return;
+                case Disguise.Invisible:
+                    return;
+                
+            }
+
             Rectangle rect = new Rectangle(
                 (int)Math.Round((Position.X - Width) * Map.ViewScale),
                 (int)Math.Round((Position.Y - Height * Math.Sqrt(2)) * Map.ViewScale),
