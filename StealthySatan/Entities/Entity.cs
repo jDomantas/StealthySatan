@@ -9,7 +9,7 @@ namespace StealthySatan.Entities
 {
     abstract class Entity
     {
-        public enum Direction { Left, Right }
+        public enum Direction { Left = 0, Right }
 
         public Vector Position { get; protected set; }
         public double Width { get; }
@@ -203,6 +203,8 @@ namespace StealthySatan.Entities
 
         public bool CheckPlayerVisibility()
         {
+            if (Map.PlayerEntity.Removed)
+                return false;
             if (Map.PlayerEntity.CurrentDisguise != Player.Disguise.Player)
                 return false;
             if (!Map.PlayerEntity.InForeground)

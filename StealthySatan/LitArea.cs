@@ -34,7 +34,7 @@ namespace StealthySatan
         /// </summary>
         /// <param name="e">Entity to be tested</param>
         /// <returns>Returns if entity intersects this lit area</returns>
-        public bool DoesIntersect(Entity e)
+        public virtual bool DoesIntersect(Entity e)
         {
             // do simple check against entity's center
             double x = e.Position.X + e.Width / 2;
@@ -48,7 +48,7 @@ namespace StealthySatan
             return true;
         }
 
-        public void Draw(SpriteBatch sb)
+        public virtual void Draw(SpriteBatch sb)
         {
             int leftX = (int)Math.Round((X - BottomWidth / 2) * Map.ViewScale);
             int topLeftX = (int)Math.Round((X - TopWidth / 2) * Map.ViewScale);
