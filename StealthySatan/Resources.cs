@@ -25,7 +25,6 @@ namespace StealthySatan
             for (int i = 0; i < 8; i++)
                 Graphics.ManWalk[i] = content.Load<Texture2D>("Graphics/man/normal/man" + (i + 1));
 
-            // ======================
             Graphics.ScaredManWalk = new Texture2D[8];
             for (int i = 0; i < 8; i++)
                 Graphics.ScaredManWalk[i] = content.Load<Texture2D>("Graphics/man/scared/spookedman" + (i + 1));
@@ -34,7 +33,11 @@ namespace StealthySatan
             Graphics.PossesedManWalk = new Texture2D[8];
             for (int i = 0; i < 8; i++)
                 Graphics.PossesedManWalk[i] = content.Load<Texture2D>("Graphics/man/possesed/spookyman" + (i + 1));
-            //=======================
+
+            Graphics.PlayerFade = new Texture2D[3];
+            for (int i = 0; i < 3; i++)
+                Graphics.PlayerFade[i] = content.Load<Texture2D>("Graphics/imp/dissapear" + (i + 1));
+
             Graphics.Tiles = content.Load<Texture2D>("Graphics/tiles");
         }
 
@@ -52,6 +55,7 @@ namespace StealthySatan
             public static Texture2D ManStand;
             public static Texture2D PossesedManStand;
             public static Texture2D[] PossesedManWalk;
+            public static Texture2D[] PlayerFade;
             public static Texture2D Tiles;
             public static Texture2D FadingTriangle;
             public static Texture2D FadingRectangle;
