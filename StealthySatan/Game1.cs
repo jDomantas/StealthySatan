@@ -1,6 +1,7 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
+using Microsoft.Xna.Framework.Media;
 using System;
 
 namespace StealthySatan
@@ -74,6 +75,9 @@ namespace StealthySatan
 
             // load all other content
             Resources.Load(Content);
+
+            MediaPlayer.Play(Resources.Audio.BackgroundMusic);
+            MediaPlayer.IsRepeating = true;
         }
         
         protected override void Update(GameTime gameTime)

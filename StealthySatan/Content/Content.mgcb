@@ -464,3 +464,9 @@
 /processorParam:TextureFormat=Color
 /build:Graphics/imp/dissapear3.png
 
+#begin Audio/music/bgmusic.wav
+/importer:WavImporter
+/processor:SongProcessor
+/processorParam:Quality=Best
+/build:Audio/music/bgmusic.wav
+

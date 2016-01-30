@@ -1,5 +1,6 @@
 ﻿using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
+using Microsoft.Xna.Framework.Media;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -39,6 +40,10 @@ namespace StealthySatan
                 Graphics.PlayerFade[i] = content.Load<Texture2D>("Graphics/imp/dissapear" + (i + 1));
 
             Graphics.Tiles = content.Load<Texture2D>("Graphics/tiles");
+
+            //======================================================================
+
+            Audio.BackgroundMusic = content.Load<Song>("Audio/music/bgmusic");
         }
 
         /// <summary>
@@ -66,7 +71,7 @@ namespace StealthySatan
         /// </summary>
         public static class Audio
         {
-
+            public static Song BackgroundMusic;
         }
     }
 }
