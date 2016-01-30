@@ -13,10 +13,11 @@ namespace StealthySatan.Entities
 
         private const double MoveSpeed = 0.1;
 
-        private Strategy CurrentStrategy;
+        private Strategy CurrentStrategy, OriginalStrategy;
         private double PatrolXLeft, PatrolXRight;
+        private double StartX;
         private double CheckX;
-        private int LookTime;
+        private int LookTime, TimeSpentChecking;
 
 
 
@@ -28,7 +29,8 @@ namespace StealthySatan.Entities
         public Policeman(Map map, Vector position) : base(map, 1.6, 2.3) // Look around
         {
             Position = position;
-            CurrentStrategy = Strategy.LookAround;
+            StartX = position.X;
+            CurrentStrategy = OriginalStrategy = Strategy.LookAround;
             Facing = Map.Random.Next(2) == 1 ? Direction.Left : Direction.Right;
             LookTime = Map.Random.Next(300);
         }
@@ -42,7 +44,7 @@ namespace StealthySatan.Entities
         /// <param name="x2"></param>
         public Policeman(Map map, Vector position, double x1, double x2) : this(map, position)
         {
-            CurrentStrategy = Strategy.Patrol;
+            CurrentStrategy = OriginalStrategy = Strategy.Patrol;
             if (x2 < x1)
             {
                 double tmp = x2;
@@ -59,6 +61,7 @@ namespace StealthySatan.Entities
             {
                 // shoot player instead
                 CurrentStrategy = Strategy.Check;
+                TimeSpentChecking = 0;
                 CheckX = Map.PlayerEntity.Position.X + Map.Random.NextDouble() * 2 - 1;
             }
 
@@ -81,26 +84,56 @@ namespace StealthySatan.Entities
             }
             else if (CurrentStrategy == Strategy.LookAround)
             {
-                LookTime--;
-                if (LookTime <= 0)
+                if (Position.X < StartX - 0.5)
                 {
-                    LookTime = 200 + Map.Random.Next(100);
-                    Facing = Facing == Direction.Left ? Direction.Right : Direction.Left;
+                    Facing = Direction.Right;
+                    MoveHorizontal(MoveSpeed);
                 }
-
+                else if (Position.X > StartX + 0.5)
+                {
+                    Facing = Direction.Left;
+                    MoveHorizontal(-MoveSpeed);
+                }
+                else
+                {
+                    LookTime--;
+                    if (LookTime <= 0)
+                    {
+                        LookTime = 200 + Map.Random.Next(100);
+                        Facing = Facing == Direction.Left ? Direction.Right : Direction.Left;
+                    }
+                }
             }
             else
             {
-                int s = Math.Sign(CheckX - Position.X);
-                if (s == -1)
-                    Facing = Direction.Left;
-                else
-                    Facing = Direction.Right;
-                MoveHorizontal(s * MoveSpeed * 1.5);
-                if (Math.Abs(CheckX - Position.X) <= 0.5)
+                if(Math.Abs(CheckX - Position.X) <= 1.5)
+                    TimeSpentChecking++;
+
+                if (TimeSpentChecking >= 400 + Map.Random.Next(400))
                 {
-                    CurrentStrategy = Strategy.LookAround;
-                    LookTime = 40 + Map.Random.Next(20);
+                    CurrentStrategy = OriginalStrategy;
+                }
+                else
+                {
+                    if (Math.Abs(CheckX - Position.X) <= 0.5)
+                    {
+                        LookTime--;
+                        if (LookTime <= 0)
+                        {
+                            LookTime = 200 + Map.Random.Next(100);
+                            Facing = Facing == Direction.Left ? Direction.Right : Direction.Left;
+                        }
+                    }
+                    else
+                    {
+                        int s = Math.Sign(CheckX - Position.X);
+                        if (s == -1)
+                            Facing = Direction.Left;
+                        else
+                            Facing = Direction.Right;
+                        MoveHorizontal(s * MoveSpeed * 1.5);
+                        LookTime = 40 + Map.Random.Next(20);
+                    }
                 }
             }
         }
@@ -115,6 +148,7 @@ namespace StealthySatan.Entities
             if (CurrentStrategy != Strategy.Check && CanSeeLocation(location))
             {
                 CurrentStrategy = Strategy.Check;
+                TimeSpentChecking = 0;
                 CheckX = location.X + Map.Random.NextDouble() * 2 - 1;
             }
         }
