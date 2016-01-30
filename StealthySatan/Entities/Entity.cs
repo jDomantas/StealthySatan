@@ -191,5 +191,26 @@ namespace StealthySatan.Entities
                                         (int)Math.Floor((other.Position.Y + other.Height / 2) / Map.TileSize));
 
         }
+
+        public bool CheckPlayerVisibility()
+        {
+            if (Map.PlayerEntity.Position.X + Map.PlayerEntity.Width / 2 > Position.X + Width / 2 && Facing == Direction.Left)
+                return false;
+            if (Map.PlayerEntity.Position.X + Map.PlayerEntity.Width / 2 < Position.X + Width / 2 && Facing == Direction.Right)
+                return false;
+
+            if (CanSeeOther(Map.PlayerEntity))
+            {
+                Map.TriggerAlarm();
+                return true;
+            }
+
+            return false;
+        }
+
+        public virtual void AllarmTriggered(Vector location)
+        {
+
+        }
     }
 }

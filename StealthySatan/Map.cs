@@ -16,6 +16,10 @@ namespace StealthySatan
 
         private Tile[,] Tiles { get; }
 
+        private int GuardsToSpawn;
+        private int NextGuardTimer;
+        private Vector GuardTarget;
+
         private List<Entity> Entities;
         private List<LitArea> LitAreas;
         private List<Staircase> Staircases;
@@ -35,6 +39,8 @@ namespace StealthySatan
             Staircases = new List<Staircase>();
 
             Random = new Random((int)DateTime.Now.Ticks);
+
+            GuardsToSpawn = 0;
 
             Color[] textureData = new Color[WidthInTiles * HeightInTiles];
             createFrom.GetData(textureData);
@@ -222,6 +228,14 @@ namespace StealthySatan
                         return false;
 
             return true;
+        }
+
+        /// <summary>
+        /// Triggers alarm at the player's current location
+        /// </summary>
+        public void TriggerAlarm()
+        {
+
         }
     }
 }
