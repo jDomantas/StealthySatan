@@ -88,7 +88,7 @@ namespace StealthySatan.Entities
 
             if (InForeground)
             {
-                if (CurrentDisguise == Disguise.Player)
+                if (CurrentDisguise == Disguise.Player && StunTimer <= 0)
                     CheckForPossesions();
                 LightImmune = false;
 

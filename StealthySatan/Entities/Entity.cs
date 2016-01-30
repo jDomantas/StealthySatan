@@ -192,7 +192,7 @@ namespace StealthySatan.Entities
 
         public bool CanSeeLocation(Vector location)
         {
-            if ((Position - location).Length / Map.TileSize > 50)
+            if ((Position - location).Length / Map.TileSize > 18)
                 return false;
             return Map.IsRectangleEmpty((int)Math.Floor((Position.X + Width / 2) / Map.TileSize),
                                         (int)Math.Floor((Position.Y + Height / 2) / Map.TileSize),

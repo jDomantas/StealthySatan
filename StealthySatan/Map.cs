@@ -93,12 +93,12 @@ namespace StealthySatan
         private void AddMapObjects()
         {
             Entities.Add(new Policeman(this, new Vector(10, 15.4), 4, 13, false));
-            //Entities.Add(new Policeman(this, new Vector(45, 15.4), false));
-            //Entities.Add(new Policeman(this, new Vector(30, 24.4), true));
+            Entities.Add(new Policeman(this, new Vector(45, 15.4), false));
+            Entities.Add(new Policeman(this, new Vector(30, 24.4), true));
 
             Entities.Add(new Civilian(this, new Vector(45, 6.4)));
-            //Entities.Add(new Civilian(this, new Vector(45, 15.4)));
-            //Entities.Add(new Civilian(this, new Vector(30, 24.4)));
+            Entities.Add(new Civilian(this, new Vector(45, 15.4)));
+            Entities.Add(new Civilian(this, new Vector(30, 24.4)));
             
             AddPairOfStairaces(new Vector(30, 6), new Vector(30, 15));
             AddPairOfStairaces(new Vector(2, 15), new Vector(2, 24));
