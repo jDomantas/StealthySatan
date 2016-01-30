@@ -59,13 +59,14 @@ namespace StealthySatan
             public static Texture2D Triangle;
             public static Texture2D[] PlayerWalk;
             public static Texture2D PlayerStand;
+            public static Texture2D[] PlayerFade;
+            public static Texture2D[] PlayerDeath;
             public static Texture2D[] ManWalk;
             public static Texture2D[] ScaredManWalk;
             public static Texture2D ManStand;
             public static Texture2D PossesedManStand;
             public static Texture2D[] PossesedManWalk;
-            public static Texture2D[] PlayerFade;
-            public static Texture2D[] PlayerDeath;
+            
             public static Texture2D Tiles;
             public static Texture2D FadingTriangle;
             public static Texture2D FadingRectangle;

@@ -17,7 +17,7 @@ namespace StealthySatan.Entities
         private double PatrolXLeft, PatrolXRight;
         private double StartX;
         private double CheckX;
-        private int LookTime, TimeSpentChecking;
+        private int LookTime, TimeSpentChecking, ShootingTimer;
         private Staircase GoalStaircase;
 
 
@@ -61,11 +61,22 @@ namespace StealthySatan.Entities
         {
             if (CheckPlayerVisibility())
             {
-                // shoot player instead
+                if (Math.Abs(GetCenter().X - Map.PlayerEntity.GetCenter().X) <= 20)
+                {
+                    // shoot player
+                    ShootingTimer++;
+                    if (ShootingTimer >= 20)
+                        Map.PlayerEntity.Kill();
+                }
+                else
+                    ShootingTimer = 0;
+
                 CurrentStrategy = Strategy.Check;
                 TimeSpentChecking = 0;
                 CheckX = Map.PlayerEntity.Position.X + Map.Random.NextDouble() * 2 - 1;
             }
+            else
+                ShootingTimer = 0;
 
             if (CurrentStrategy != Strategy.Check && GoalStaircase != null)
             {
@@ -178,10 +189,21 @@ namespace StealthySatan.Entities
                    (int)Math.Round((Position.Y - Height * 0.59) * Map.ViewScale),
                    (int)Math.Round(Width * 2.7 * Map.ViewScale),
                    (int)Math.Round(Width * 2.7 / 600 * 512 * Map.ViewScale));
-            
+
+            Texture2D texture;
+
+            if (ShootingTimer <= 0)
+            {
+                texture = DistanceWalked < 0.001 ? Resources.Graphics.ManStand : Resources.Graphics.ManWalk[(int)Math.Floor(DistanceWalked * 2) % 8];
+            }
+            else if (ShootingTimer < 7)
+                texture = Resources.Graphics; // draws gun
+            else
+                texture = Resources.Graphics; // fully drawn gun
+
             sb.Draw(
-                DistanceWalked < 0.001 ? Resources.Graphics.ManStand : Resources.Graphics.ManWalk[(int)Math.Floor(DistanceWalked * 2) % 8],
-                rect, null, Color.White, 0, Vector2.Zero, Facing == Direction.Left ? SpriteEffects.FlipHorizontally : SpriteEffects.None, 0);
+                texture, rect, null, Color.White, 0, Vector2.Zero,
+                Facing == Direction.Left ? SpriteEffects.FlipHorizontally : SpriteEffects.None, 0);
         }
 
         public override void AllarmTriggered(Vector location)
