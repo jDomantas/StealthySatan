@@ -8,7 +8,7 @@ namespace StealthySatan
 {
     class Map
     {
-        public const double TileSize = 1;
+        public const double TileSize = 1; // never ever change this 
         public const double ViewScale = 25;
 
         public int WidthInTiles { get; }
