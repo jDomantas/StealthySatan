@@ -1,6 +1,7 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
+using System;
 
 namespace StealthySatan
 {
@@ -16,8 +17,8 @@ namespace StealthySatan
             graphics = new GraphicsDeviceManager(this);
             Content.RootDirectory = "Content";
 
-            graphics.PreferredBackBufferWidth = 640;
-            graphics.PreferredBackBufferHeight = 480;
+            graphics.PreferredBackBufferWidth = 1280;
+            graphics.PreferredBackBufferHeight = 720;
             graphics.ApplyChanges();
 
             IsMouseVisible = true;
@@ -27,7 +28,11 @@ namespace StealthySatan
         {
             base.Initialize();
 
-            gameMap = new Map(32, 24);
+            using (var file = System.IO.File.OpenRead("level.png"))
+            {
+                Texture2D map = Texture2D.FromStream(GraphicsDevice, file);
+                gameMap = new Map(map.Width, map.Height, map);
+            }
         }
         
         protected override void LoadContent()
@@ -37,6 +42,35 @@ namespace StealthySatan
             // init pixel to be 1x1 white texture
             Resources.Graphics.Pixel = new Texture2D(GraphicsDevice, 1, 1);
             Resources.Graphics.Pixel.SetData(new Color[] { Color.White });
+
+            // init triangle to have filled bottom left half
+            const int triangleSize = 1024;
+            Resources.Graphics.Triangle = new Texture2D(GraphicsDevice, triangleSize, triangleSize);
+            Color[] triangleData = new Color[triangleSize * triangleSize];
+            for (int x = 0; x < triangleSize; x++)
+                for (int y = 0; y < triangleSize; y++)
+                    triangleData[x + y * triangleSize] = x <= y ? Color.White : new Color(0, 0, 0, 0);
+            Resources.Graphics.Triangle.SetData(triangleData);
+
+            // init fading triangle
+            Resources.Graphics.FadingTriangle = new Texture2D(GraphicsDevice, triangleSize, triangleSize);
+            for (int x = 0; x < triangleSize; x++)
+                for (int y = 0; y < triangleSize; y++)
+                {
+                    int val = 255 - 100 * y / triangleSize;
+                    triangleData[x + y * triangleSize] = x <= y ? new Color(val, val, val, val) : new Color(0, 0, 0, 0);
+                }
+            Resources.Graphics.FadingTriangle.SetData(triangleData);
+
+            // init fading rectangle
+            Resources.Graphics.FadingRectangle = new Texture2D(GraphicsDevice, 1, triangleSize);
+            Color[] rectangleData = new Color[triangleSize];
+            for (int i = 0; i < triangleSize; i++)
+            {
+                int val = 255 - 100 * i / triangleSize;
+                triangleData[i] = new Color(val, val, val, val);
+            }
+            Resources.Graphics.FadingRectangle.SetData(triangleData);
 
             // load all other content
             Resources.Load(Content);
@@ -58,8 +92,19 @@ namespace StealthySatan
         {
             GraphicsDevice.Clear(Color.CornflowerBlue);
 
-            spriteBatch.Begin();
+            int centerX = (int)Math.Round((gameMap.PlayerEntity.Position.X + gameMap.PlayerEntity.Width / 2) * Map.ViewScale);
+            int centerY = (int)Math.Round((gameMap.PlayerEntity.Position.Y + gameMap.PlayerEntity.Height / 2) * Map.ViewScale);
+            Matrix m = Matrix.CreateTranslation(new Vector3(
+                -centerX + graphics.PreferredBackBufferWidth / 2, 
+                -centerY + graphics.PreferredBackBufferHeight / 2, 
+                0));
+
+            spriteBatch.Begin(samplerState: SamplerState.PointClamp, transformMatrix: m);
             gameMap.Draw(spriteBatch);
+            spriteBatch.End();
+
+            spriteBatch.Begin(blendState: BlendState.Additive, transformMatrix: m);
+            gameMap.DrawBlend(spriteBatch);
             spriteBatch.End();
 
             base.Draw(gameTime);

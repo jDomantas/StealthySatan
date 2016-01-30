@@ -16,6 +16,7 @@ namespace StealthySatan
         public static void Load(ContentManager content)
         {
             Graphics.Player = content.Load<Texture2D>("Graphics/player");
+            Graphics.Tiles = content.Load<Texture2D>("Graphics/tiles");
         }
 
         /// <summary>
@@ -24,7 +25,11 @@ namespace StealthySatan
         public static class Graphics
         {
             public static Texture2D Pixel;
+            public static Texture2D Triangle;
             public static Texture2D Player;
+            public static Texture2D Tiles;
+            public static Texture2D FadingTriangle;
+            public static Texture2D FadingRectangle;
         }
 
         /// <summary>

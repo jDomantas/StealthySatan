@@ -13,33 +13,39 @@ namespace StealthySatan.Entities
         private const double MoveSpeed = 0.1;
         private const double JumpPower = 0.255;
         private Vector Velocity;
-        private double MoveDistance;
+        private bool LightImmune;
 
-        public Player(Map map) : base(map, 1.2, 1.2)
+        public Player(Map map) : base(map, 0.9, 0.9)
         {
             Velocity = Vector.Zero;
+            Position = new Vector(5, 5);
         }
 
         public override void Update()
         {
+            if (!InForeground && !LightImmune && Map.IsLit(this))
+                InForeground = true;
+
             if (InForeground)
             {
+                LightImmune = false;
+
                 // gravity, platformer physics
                 Velocity.X = 0;
                 if (InputHandler.IsPressed(InputHandler.Key.Left))
                 {
                     Facing = Direction.Left;
                     Velocity.X -= MoveSpeed;
-                    MoveDistance += MoveSpeed;
+                    DistanceWalked += MoveSpeed;
                 }
                 else if (InputHandler.IsPressed(InputHandler.Key.Right))
                 {
                     Facing = Direction.Right;
                     Velocity.X += MoveSpeed;
-                    MoveDistance += MoveSpeed;
+                    DistanceWalked += MoveSpeed;
                 }
                 else
-                    MoveDistance = 0;
+                    DistanceWalked = 0;
 
                 if (OnGround && InputHandler.IsTyped(InputHandler.Key.Up))
                     Velocity.Y = -JumpPower;
@@ -52,12 +58,27 @@ namespace StealthySatan.Entities
             {
                 // no gravity, wall climbing
                 Velocity = Vector.Zero;
-                if (InputHandler.IsPressed(InputHandler.Key.Left)) Velocity.X -= MoveSpeed;
-                if (InputHandler.IsPressed(InputHandler.Key.Right)) Velocity.X += MoveSpeed;
-                if (InputHandler.IsPressed(InputHandler.Key.Up)) Velocity.Y -= MoveSpeed;
-                if (InputHandler.IsPressed(InputHandler.Key.Down)) Velocity.Y += MoveSpeed;
+                if (InputHandler.IsPressed(InputHandler.Key.Left)) { Facing = Direction.Left; Velocity.X -= MoveSpeed; LightImmune = false; }
+                if (InputHandler.IsPressed(InputHandler.Key.Right)) { Facing = Direction.Right; Velocity.X += MoveSpeed; LightImmune = false; }
+                if (InputHandler.IsPressed(InputHandler.Key.Up)) { Velocity.Y -= MoveSpeed; LightImmune = false; }
+                if (InputHandler.IsPressed(InputHandler.Key.Down)) { Velocity.Y += MoveSpeed; LightImmune = false; }
 
                 Move(Velocity);
+            }
+
+            if (InputHandler.IsTyped(InputHandler.Key.Enter))
+            {
+                Staircase toEnter = Map.GetIntersectingStaircase(this);
+                if (toEnter != null)
+                {
+                    toEnter = toEnter.Other;
+                    Position = new Vector(
+                        toEnter.Location.X + Staircase.Width / 2 - Width / 2, 
+                        toEnter.Location.Y + Staircase.Height / 2 - Height / 2);
+
+                    InForeground = false;
+                    LightImmune = true;
+                }
             }
 
             if (InputHandler.IsTyped(InputHandler.Key.Hide) && (!InForeground || !Map.IntersectsObjects(this)))
@@ -70,7 +91,7 @@ namespace StealthySatan.Entities
         {
             if (!InForeground)
             {
-                sb.Draw(Resources.Graphics.Player, GetScreenBounds(), new Rectangle(0, 200, 100, 100), Color.White, 
+                sb.Draw(Resources.Graphics.Player, GetScreenBounds(), new Rectangle(0, 200, 100, 100), Color.LightGray, 
                     0, Vector2.Zero, Facing == Direction.Left ? SpriteEffects.FlipHorizontally : SpriteEffects.None, 0);
             }
             else if (!OnGround)
@@ -80,7 +101,7 @@ namespace StealthySatan.Entities
             }
             else
             {
-                int frame = ((int)Math.Round(MoveDistance * 2)) % 4;
+                int frame = ((int)Math.Round(DistanceWalked * 2)) % 4;
                 sb.Draw(Resources.Graphics.Player, GetScreenBounds(), new Rectangle(100 * frame, 0, 100, 100), Color.White,
                     0, Vector2.Zero, Facing == Direction.Left ? SpriteEffects.FlipHorizontally : SpriteEffects.None, 0);
             }

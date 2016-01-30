@@ -21,6 +21,8 @@ namespace StealthySatan.Entities
         public bool Removed { get; protected set; }
         public Direction Facing { get; protected set; }
 
+        protected double DistanceWalked;
+
         public Entity(Map map, double width, double height)
         {
             Map = map;

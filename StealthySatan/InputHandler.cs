@@ -8,15 +8,16 @@ namespace StealthySatan
 {
     class InputHandler
     {
-        public enum Key { Up = 0, Down = 1, Left = 2, Right = 3, Hide = 4 }
+        public enum Key { Up = 0, Down = 1, Left = 2, Right = 3, Hide = 4, Enter = 5 }
 
-        private static Keys[] KeyBindings = new Keys[5]
+        private static Keys[][] KeyBindings = new Keys[][]
         {
-            Keys.W,
-            Keys.S,
-            Keys.A,
-            Keys.D,
-            Keys.Space
+            new Keys[] { Keys.W, Keys.Up, Keys.NumPad8 },
+            new Keys[] { Keys.S, Keys.Down, Keys.NumPad2 },
+            new Keys[] { Keys.A, Keys.Left, Keys.NumPad4 },
+            new Keys[] { Keys.D, Keys.Right, Keys.NumPad6 },
+            new Keys[] { Keys.F, Keys.Space },
+            new Keys[] { Keys.E, Keys.Enter }
         };
 
         private static KeyboardState CurrentKeyboard, OldKeyboard;
@@ -38,7 +39,10 @@ namespace StealthySatan
         /// <returns>Returns if given key is currently pressed</returns>
         public static bool IsPressed(Key key)
         {
-            return CurrentKeyboard.IsKeyDown(KeyBindings[(int)key]);
+            for (int i = 0; i < KeyBindings[(int)key].Length; i++)
+                if (CurrentKeyboard.IsKeyDown(KeyBindings[(int)key][i]))
+                    return true;
+            return false;
         }
 
         /// <summary>
@@ -48,7 +52,11 @@ namespace StealthySatan
         /// <returns>Returns if given key became pressed in current frame</returns>
         public static bool IsTyped(Key key)
         {
-            return CurrentKeyboard.IsKeyDown(KeyBindings[(int)key]) && OldKeyboard.IsKeyUp(KeyBindings[(int)key]);
+            for (int i = 0; i < KeyBindings[(int)key].Length; i++)
+                if (CurrentKeyboard.IsKeyDown(KeyBindings[(int)key][i]) &&
+                    OldKeyboard.IsKeyUp(KeyBindings[(int)key][i]))
+                    return true;
+            return false;
         }
     }
 }

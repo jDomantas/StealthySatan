@@ -9,7 +9,7 @@ namespace StealthySatan
     class Map
     {
         public const double TileSize = 1;
-        public const double ViewScale = 20;
+        public const double ViewScale = 25;
 
         public int WidthInTiles { get; }
         public int HeightInTiles { get; }
@@ -17,62 +17,76 @@ namespace StealthySatan
         private Tile[,] Tiles { get; }
 
         private List<Entity> Entities;
+        private List<LitArea> LitAreas;
+        private List<Staircase> Staircases;
 
-        public Map(int width, int height)
+        public Player PlayerEntity { get; private set; }
+
+        public Map(int width, int height, Texture2D createFrom)
         {
             WidthInTiles = width;
             HeightInTiles = height;
 
             Tiles = new Tile[width, height];
+            Entities = new List<Entity>();
+            LitAreas = new List<LitArea>();
+            Staircases = new List<Staircase>();
 
-            string[] tempMap = new string[]
-            {
-                "................................",
-                "................................",
-                "###############.................",
-                "................................",
-                "....................xx..........",
-                "........##################......",
-                "................................",
-                "................................",
-                "................................",
-                "................................",
-                "................xxx.............",
-                "................xxx.............",
-                "...........########.............",
-                "................................",
-                "................................",
-                "................................",
-                "................................",
-                "................................",
-                "................................",
-                "................................",
-                "################................",
-                "................................",
-                "................................",
-                "................................",
-            };
-
+            Color[] textureData = new Color[WidthInTiles * HeightInTiles];
+            createFrom.GetData(textureData);
             for (int x = 0; x < WidthInTiles; x++)
                 for (int y = 0; y < HeightInTiles; y++)
-                    if (tempMap[y][x] == '.')
-                        Tiles[x, y] = new Tile(Tile.TileType.Background, null);
-                    else if (tempMap[y][x] == '#')
-                        Tiles[x, y] = new Tile(Tile.TileType.Wall, null);
-                    else
-                        Tiles[x, y] = new Tile(Tile.TileType.Object, null);
+                    if (textureData[x + y * WidthInTiles] == new Color(127, 127, 127))
+                        Tiles[x, y] = new Tile(Tile.BackType.Ventilation, Tile.BlockType.None, Tile.BlockType.None);
+                    else if (textureData[x + y * WidthInTiles] == Color.Black)
+                    {
+                        if (y > 0 && textureData[x + (y - 1) * WidthInTiles] == new Color(127, 127, 127))
+                            Tiles[x, y] = new Tile(Tile.BackType.Wall, Tile.BlockType.Ceiling, Tile.BlockType.Ceiling);
+                        else if (y < HeightInTiles - 1 && textureData[x + (y + 1) * WidthInTiles] == new Color(127, 127, 127))
+                            Tiles[x, y] = new Tile(Tile.BackType.Wall, Tile.BlockType.Floor, Tile.BlockType.Floor);
+                        else
+                            Tiles[x, y] = new Tile(Tile.BackType.Wall, Tile.BlockType.Wall, Tile.BlockType.Wall);
+                    }
+                    else if (textureData[x + y * WidthInTiles] == new Color(63, 72, 204))
+                    {
+                        Tiles[x, y] = new Tile(Tile.BackType.Wall, Tile.BlockType.Crate, Tile.BlockType.None);
+                    }
+                    else if (textureData[x + y * WidthInTiles] == Color.White)
+                    {
+                        Tiles[x, y] = new Tile(Tile.BackType.Wall, Tile.BlockType.None, Tile.BlockType.None);
+                    }
+                    else if (textureData[x + y * WidthInTiles] == new Color(237, 28, 36))
+                    {
+                        
+                        Tiles[x, y] = new Tile(Tile.BackType.Wall, Tile.BlockType.None, Tile.BlockType.Lamp);
+                        if (x > 0 && x < WidthInTiles - 1 &&
+                            textureData[x + y * WidthInTiles + 1] == new Color(237, 28, 36) &&
+                            textureData[x + y * WidthInTiles - 1] == new Color(237, 28, 36))
+                            LitAreas.Add(new LitArea(x + 0.6, y + 0.4, 5.5, 2.3, 8));
+                    }
 
-            Entities = new List<Entity>();
-            Entities.Add(new Player(this));
+
+            Entities.Add(PlayerEntity = new Player(this));
+
+            AddPairOfStairaces(new Vector(30, 6), new Vector(30, 15));
+            AddPairOfStairaces(new Vector(2, 15), new Vector(2, 24));
         }
 
-        /// <summary>
-        /// Adds entity to the map
-        /// </summary>
-        /// <param name="e">Entity to be added</param>
+        private void AddPairOfStairaces(Vector pos1, Vector pos2)
+        {
+            Staircase first = new Staircase(pos1, null);
+            Staircase second = new Staircase(pos2, first);
+            first.Other = second;
+
+            Staircases.Add(first);
+            Staircases.Add(second);
+        }
+            
         public void AddEntity(Entity e)
         {
-            Entities = new List<Entity>();
+            // lol
+            //Entities = new List<Entity>();
+            Entities.Add(e);
         }
 
         /// <summary>
@@ -108,38 +122,68 @@ namespace StealthySatan
 
             for (int x = left; x < right; x++)
                 for (int y = top; y < bottom; y++)
-                    if (Tiles[x, y].Type == Tile.TileType.Object)
+                    if (Tiles[x, y].Background != Tile.BlockType.None && Tiles[x, y].Foreground == Tile.BlockType.None)
                         return true;
 
             return false;   
         }
 
+        /// <summary>
+        /// Checks if given entity is in lit area
+        /// </summary>
+        /// <param name="e">Entity to be tested</param>
+        /// <returns>Returns if entity is lit</returns>
+        public bool IsLit(Entity e)
+        {
+            for (int i = 0; i < LitAreas.Count; i++)
+                if (LitAreas[i].DoesIntersect(e))
+                    return true;
+            return false;
+        }
+
+        public Staircase GetIntersectingStaircase(Entity e)
+        {
+            for (int i = 0; i < Staircases.Count; i++)
+                if (Staircases[i].DoesIntersect(e))
+                    return Staircases[i];
+            return null;
+        }
+
         public void Update()
         {
+            if (PlayerEntity.Removed) return;
+
             for (int i = Entities.Count - 1; i >= 0; i--)
                 Entities[i].Update();
 
             Entities.RemoveAll(e => e.Removed);
         }
-        
+
         public void Draw(SpriteBatch sb)
         {
-            for (int x = 0; x < WidthInTiles; x++)
-                for (int y = 0; y < HeightInTiles; y++)
-                {
-                    Color tileColor = Color.LightGray;
-                    if (Tiles[x, y].Type == Tile.TileType.Object) tileColor = Color.Black;
-                    else if (Tiles[x, y].Type == Tile.TileType.Wall) tileColor = Color.Red;
+            for (int y = HeightInTiles - 1; y >= 0; y--)
+                for (int x = WidthInTiles - 1; x >= 0; x--)
+                    Tiles[x, y].DrawBackground(sb, x, y);
 
-                    sb.Draw(Resources.Graphics.Pixel, new Rectangle(
-                        (int)Math.Round(x * ViewScale),
-                        (int)Math.Round(y * ViewScale),
-                        (int)Math.Round(ViewScale),
-                        (int)Math.Round(ViewScale)), tileColor);
-                }
+            for (int i = 0; i < Staircases.Count; i++)
+                Staircases[i].Draw(sb);
+
+            for (int y = HeightInTiles - 1; y >= 0; y--)
+                for (int x = WidthInTiles - 1; x >= 0; x--)
+                    Tiles[x, y].DrawBackgroundLayer(sb, x, y);
 
             for (int i = 0; i < Entities.Count; i++)
                 Entities[i].Draw(sb);
+
+            for (int y = HeightInTiles - 1; y >= 0; y--)
+                for (int x = WidthInTiles - 1; x >= 0; x--)
+                    Tiles[x, y].DrawForegroundLayer(sb, x, y);
+        }
+
+        public void DrawBlend(SpriteBatch sb)
+        {
+            for (int i = 0; i < LitAreas.Count; i++)
+                LitAreas[i].Draw(sb);
         }
     }
 }
