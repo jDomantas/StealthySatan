@@ -95,6 +95,8 @@ namespace StealthySatan
             Entities.Add(new Policeman(this, new Vector(10, 15.4), 4, 13, false));
             Entities.Add(new Policeman(this, new Vector(45, 15.4), false));
             Entities.Add(new Policeman(this, new Vector(30, 24.4), true));
+            for (double x = 30; x < 45; x += 0.4)
+                Entities.Add(new Policeman(this, new Vector(x, 15.4), false));
 
             Entities.Add(new Civilian(this, new Vector(45, 6.4)));
             Entities.Add(new Civilian(this, new Vector(45, 15.4)));
@@ -299,7 +301,18 @@ namespace StealthySatan
 
         public Entity GetTarget(Entity e)
         {
-            return Entities.Where(en => e.CanSeeOther(en) && en != e).OrderBy(en => (e.GetCenter()-en.GetCenter()).LengthSquared).FirstOrDefault();
+            if (e.Facing == Entity.Direction.Left)
+                return Entities
+                    .Where(en => en.GetCenter().X < e.GetCenter().X)
+                    .Where(en => e.CanSeeOther(en) && en != e)
+                    .OrderBy(en => (e.GetCenter() - en.GetCenter()).LengthSquared)
+                    .FirstOrDefault();
+            else
+                return Entities
+                    .Where(en => en.GetCenter().X > e.GetCenter().X)
+                    .Where(en => e.CanSeeOther(en) && en != e)
+                    .OrderBy(en => (e.GetCenter() - en.GetCenter()).LengthSquared)
+                    .FirstOrDefault();
         }
     }
 }

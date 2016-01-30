@@ -124,14 +124,19 @@ namespace StealthySatan.Entities
             }
             else
             {
-                // no gravity, wall climbing
-                Velocity = Vector.Zero;
-                if (InputHandler.IsPressed(InputHandler.Key.Left)) { Facing = Direction.Left; Velocity.X -= MoveSpeed; LightImmune = false; }
-                if (InputHandler.IsPressed(InputHandler.Key.Right)) { Facing = Direction.Right; Velocity.X += MoveSpeed; LightImmune = false; }
-                if (InputHandler.IsPressed(InputHandler.Key.Up)) { Velocity.Y -= MoveSpeed; LightImmune = false; }
-                if (InputHandler.IsPressed(InputHandler.Key.Down)) { Velocity.Y += MoveSpeed; LightImmune = false; }
+                if (StunTimer <= 0)
+                {
+                    // no gravity, wall climbing
+                    Velocity = Vector.Zero;
+                    if (InputHandler.IsPressed(InputHandler.Key.Left)) { Facing = Direction.Left; Velocity.X -= MoveSpeed; LightImmune = false; }
+                    if (InputHandler.IsPressed(InputHandler.Key.Right)) { Facing = Direction.Right; Velocity.X += MoveSpeed; LightImmune = false; }
+                    if (InputHandler.IsPressed(InputHandler.Key.Up)) { Velocity.Y -= MoveSpeed; LightImmune = false; }
+                    if (InputHandler.IsPressed(InputHandler.Key.Down)) { Velocity.Y += MoveSpeed; LightImmune = false; }
 
-                Move(Velocity);
+                    Move(Velocity);
+                }
+                else
+                    StunTimer--;
             }
 
             if (InputHandler.IsTyped(InputHandler.Key.Enter))

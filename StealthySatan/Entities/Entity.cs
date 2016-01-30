@@ -20,6 +20,7 @@ namespace StealthySatan.Entities
         public bool OnGround { get; private set; }
         public bool Removed { get; protected set; }
         public Direction Facing { get; protected set; }
+        private int AlarmTimer;
 
         protected double DistanceWalked;
 
@@ -204,22 +205,24 @@ namespace StealthySatan.Entities
         public bool CheckPlayerVisibility()
         {
             if (Map.PlayerEntity.Removed)
-                return false;
+            { AlarmTimer = 30; return false; }
             if (Map.PlayerEntity.CurrentDisguise != Player.Disguise.Player && !Map.PlayerEntity.CanSeeThroughDisguise)
-                return false;
+            { AlarmTimer = 30; return false; }
             if (!Map.PlayerEntity.InForeground)
-                return false;
+            { AlarmTimer = 30; return false; }
             if (Map.PlayerEntity.Position.X + Map.PlayerEntity.Width / 2 > Position.X + Width / 2 && Facing == Direction.Left)
-                return false;
+            { AlarmTimer = 30; return false; }
             if (Map.PlayerEntity.Position.X + Map.PlayerEntity.Width / 2 < Position.X + Width / 2 && Facing == Direction.Right)
-                return false;
+            { AlarmTimer = 30; return false; }
 
             if (CanSeeOther(Map.PlayerEntity))
             {
-                Map.TriggerAlarm();
+                if (AlarmTimer-- < 0)
+                    Map.TriggerAlarm();
                 return true;
             }
 
+            AlarmTimer = 30;
             return false;
         }
 
