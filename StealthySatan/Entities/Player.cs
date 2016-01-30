@@ -172,7 +172,7 @@ namespace StealthySatan.Entities
                 if (ShootTimer == 28)
                 {
                     DisguiseTimer = 60;
-                    // TODO: kill
+                    Map.GetTarget(this)?.Kill();
                 }
             }
             if (CurrentDisguise == Disguise.Policeman && ShootTimer == 0)

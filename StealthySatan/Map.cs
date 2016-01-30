@@ -296,5 +296,10 @@ namespace StealthySatan
                 for (int i = Entities.Count - 1; i >= 0; i--)
                     Entities[i].CallFromStaircase(s); 
         }
+
+        public Entity GetTarget(Entity e)
+        {
+            return Entities.Where(en => e.CanSeeOther(en) && en != e).OrderBy(en => (e.GetCenter()-en.GetCenter()).LengthSquared).FirstOrDefault();
+        }
     }
 }
