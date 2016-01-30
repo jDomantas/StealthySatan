@@ -9,6 +9,8 @@ namespace StealthySatan.Entities
 {
     abstract class Entity
     {
+        public enum Direction { Left, Right }
+
         public Vector Position { get; protected set; }
         public double Width { get; }
         public double Height { get; }
@@ -17,7 +19,8 @@ namespace StealthySatan.Entities
         public bool InForeground { get; protected set; }
         public bool OnGround { get; private set; }
         public bool Removed { get; protected set; }
-        
+        public Direction Facing { get; protected set; }
+
         public Entity(Map map, double width, double height)
         {
             Map = map;
@@ -29,7 +32,7 @@ namespace StealthySatan.Entities
 
             InForeground = true;
 
-            bool val = MoveUp(1);
+            Facing = Direction.Left;
         }
 
         public virtual void Update() { }

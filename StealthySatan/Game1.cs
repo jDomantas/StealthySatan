@@ -37,6 +37,9 @@ namespace StealthySatan
             // init pixel to be 1x1 white texture
             Resources.Graphics.Pixel = new Texture2D(GraphicsDevice, 1, 1);
             Resources.Graphics.Pixel.SetData(new Color[] { Color.White });
+
+            // load all other content
+            Resources.Load(Content);
         }
         
         protected override void Update(GameTime gameTime)
