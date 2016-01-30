@@ -92,9 +92,16 @@ namespace StealthySatan.Entities
                    (int)Math.Round(Width * 2.7 * Map.ViewScale),
                    (int)Math.Round(Width * 2.7 / 600 * 512 * Map.ViewScale));
 
+            Texture2D texture;
+            if (ScareTimer > 0)
+                texture = Resources.Graphics.ScaredManWalk[(int)Math.Floor(DistanceWalked * 2) % 8];
+            else if (DistanceWalked > 0)
+                texture = Resources.Graphics.ManWalk[(int)Math.Floor(DistanceWalked * 2) % 8];
+            else
+                texture = Resources.Graphics.ManStand;
             sb.Draw(
-                DistanceWalked < 0.001 ? Resources.Graphics.ManStand : Resources.Graphics.ManWalk[(int)Math.Floor(DistanceWalked * 2) % 8],
-                rect, null, Color.White, 0, Vector2.Zero, Facing == Direction.Left ? SpriteEffects.FlipHorizontally : SpriteEffects.None, 0);
+                texture, rect, null, Color.White, 0, Vector2.Zero,
+                Facing == Direction.Left ? SpriteEffects.FlipHorizontally : SpriteEffects.None, 0);
         }
     }
 }

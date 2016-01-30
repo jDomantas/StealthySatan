@@ -35,6 +35,11 @@ namespace StealthySatan.Entities
                 //to do: kill col
                 col.Kill();
             }
+            else if (col is Civilian)
+            {
+                CurrentDisguise = Disguise.Civilian;
+                col.Kill();
+            }
             
         }
 
@@ -126,12 +131,29 @@ namespace StealthySatan.Entities
             sb.Draw(Resources.Graphics.Pixel, rect, Facing == Direction.Left ? Color.Blue : Color.Green);
         }
 
+        public void DrawAsCivilian(SpriteBatch sb)
+        {
+            var rect = new Rectangle(
+                   (int)Math.Round((Position.X - 1.75) * Map.ViewScale),
+                   (int)Math.Round((Position.Y - 2.757) * Map.ViewScale),
+                   (int)Math.Round(1.6 * 2.7 * Map.ViewScale),
+                   (int)Math.Round(1.6 * 2.7 / 600 * 512 * Map.ViewScale));
+
+            sb.Draw(
+                DistanceWalked < 0.001 ? Resources.Graphics.PossesedManStand : Resources.Graphics.PossesedManWalk[(int)Math.Floor(DistanceWalked * 2) % 8],
+                rect, null, Color.White, 0, Vector2.Zero, Facing == Direction.Left ? SpriteEffects.FlipHorizontally : SpriteEffects.None, 0);
+
+        }
+
         public override void Draw(SpriteBatch sb)
         {
             switch(CurrentDisguise)
             {
                 case Disguise.Policeman:
                     DrawAsPoliceman(sb);
+                    return;
+                case Disguise.Civilian:
+                    DrawAsCivilian(sb);
                     return;
                 case Disguise.Invisible:
                     return;
