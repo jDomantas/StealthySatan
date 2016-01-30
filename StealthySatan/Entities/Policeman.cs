@@ -59,14 +59,14 @@ namespace StealthySatan.Entities
             {
                 if (Facing == Direction.Left)
                 {
-                    if (Position.X <= PatrolXLeft || MoveHorizontal(-MoveSpeed))
+                    if (Position.X <= PatrolXLeft || MoveHorizontal(-MoveSpeed*0.7))
                     {
                         Facing = Direction.Right;
                     }
                 }
                 else
                 {
-                    if (Position.X >= PatrolXRight || MoveHorizontal(MoveSpeed))
+                    if (Position.X >= PatrolXRight || MoveHorizontal(MoveSpeed*0.7))
                     {
                         Facing = Direction.Left;
                     }
