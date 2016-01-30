@@ -12,7 +12,7 @@ namespace StealthySatan.Entities
         private enum Strategy { Check, Patrol, LookAround }
 
         private const double MoveSpeed = 0.1;
-        private const double RunSpeed = 0.1;
+        private const double RunSpeed = 0.12;
 
         private Strategy CurrentStrategy, OriginalStrategy;
         private double PatrolXLeft, PatrolXRight;
@@ -93,7 +93,7 @@ namespace StealthySatan.Entities
                 if (TimeSpentChecking >= 500)
                     CurrentStrategy = OriginalStrategy;
                 
-                if (!WalkTo(CheckX, RunSpeed))
+                if (WalkTo(CheckX, RunSpeed))
                 {
                     LookTime--;
                     if (LookTime <= 0)
@@ -106,28 +106,28 @@ namespace StealthySatan.Entities
             }
             else if (GoalStaircase != null)
             {
-                if (!WalkTo(GoalStaircase.GetCenter().X, RunSpeed))
+                if (WalkTo(GoalStaircase.GetCenter().X, RunSpeed))
                 {
                     Position = new Vector(
                         GoalStaircase.Other.Location.X + Staircase.Width / 2 - Width / 2,
                         GoalStaircase.Other.Location.Y + Staircase.Height - Height);
 
                     CurrentStrategy = OriginalStrategy = Strategy.LookAround;
-                    StartX = GetCenter().X + Map.Random.NextDouble() * 8 - 4;
+                    StartX = GetCenter().X + Map.Random.NextDouble() * 4 - 2;
                     LookTime = 40 + Map.Random.Next(20);
                     GoalStaircase = null;
                 }
             }
             else if (CurrentStrategy == Strategy.Patrol)
             {
-                if (Facing == Direction.Left && WalkTo(PatrolXRight, MoveSpeed))
+                if (Facing == Direction.Left && WalkTo(PatrolXLeft, MoveSpeed))
                     Facing = Direction.Right;
-                else if (Facing == Direction.Right && WalkTo(PatrolXLeft, MoveSpeed))
+                else if (Facing == Direction.Right && WalkTo(PatrolXRight, MoveSpeed))
                     Facing = Direction.Left;
             }
             else if (CurrentStrategy == Strategy.LookAround)
             {
-                if (!WalkTo(StartX, MoveSpeed))
+                if (WalkTo(StartX, MoveSpeed))
                 {
                     DistanceWalked = 0;
                     LookTime--;
@@ -170,12 +170,18 @@ namespace StealthySatan.Entities
                    (int)Math.Round(Width * 2.7 * Map.ViewScale),
                    (int)Math.Round(Width * 2.7 / 600 * 512 * Map.ViewScale));
 
-            Texture2D texture = null;
+            Texture2D[] frames;
 
-            // TODO: texture selector
+            if (GunAlwaysUp) frames = Resources.Graphics.CopLight;
+            else if (ForceGun > 0 || ShootingTimer > 7) frames = Resources.Graphics.CopGun;
+            else if (ShootingTimer > 0) frames = Resources.Graphics.CopPrep;
+            else frames = Resources.Graphics.Cop;
+            
+            Texture2D texture;
+            if (DistanceWalked == 0) texture = frames[0];
+            else texture = frames[((int)Math.Floor(DistanceWalked * 2)) % 6 + 1];
 
-            sb.Draw(
-                texture, rect, null, Color.White, 0, Vector2.Zero,
+            sb.Draw(texture, rect, null, Color.White, 0, Vector2.Zero,
                 Facing == Direction.Left ? SpriteEffects.FlipHorizontally : SpriteEffects.None, 0);
         }
 

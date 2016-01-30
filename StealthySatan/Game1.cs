@@ -10,6 +10,7 @@ namespace StealthySatan
     {
         GraphicsDeviceManager graphics;
         SpriteBatch spriteBatch;
+        Vector CurrentCamera;
 
         Map gameMap;
 
@@ -34,6 +35,8 @@ namespace StealthySatan
                 Texture2D map = Texture2D.FromStream(GraphicsDevice, file);
                 gameMap = new Map(map.Width, map.Height, map);
             }
+
+            CurrentCamera = Vector.Zero;
         }
         
         protected override void LoadContent()
@@ -96,11 +99,20 @@ namespace StealthySatan
         {
             GraphicsDevice.Clear(Color.CornflowerBlue);
 
-            int centerX = (int)Math.Round((gameMap.PlayerEntity.Position.X + gameMap.PlayerEntity.Width / 2) * Map.ViewScale);
-            int centerY = (int)Math.Round((gameMap.PlayerEntity.Position.Y + gameMap.PlayerEntity.Height / 2) * Map.ViewScale);
+            double centerX = (gameMap.PlayerEntity.Position.X + gameMap.PlayerEntity.Width / 2) * Map.ViewScale;
+            double centerY = (gameMap.PlayerEntity.Position.Y + gameMap.PlayerEntity.Height / 2) * Map.ViewScale;
+
+            if (gameMap.PlayerEntity.Facing == Entities.Entity.Direction.Left)
+                centerX -= 4 * Map.ViewScale;
+            else
+                centerX += 4 * Map.ViewScale;
+
+            CurrentCamera = new Vector(centerX, centerY) * 0.1 + CurrentCamera * 0.9;
+
+
             Matrix m = Matrix.CreateTranslation(new Vector3(
-                -centerX + graphics.PreferredBackBufferWidth / 2, 
-                -centerY + graphics.PreferredBackBufferHeight / 2, 
+                -(float)CurrentCamera.X + graphics.PreferredBackBufferWidth / 2, 
+                -(float)CurrentCamera.Y + graphics.PreferredBackBufferHeight / 2, 
                 0));
 
             spriteBatch.Begin(transformMatrix: m);

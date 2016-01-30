@@ -43,7 +43,41 @@ namespace StealthySatan
             for (int i = 0; i < 8; i++)
                 Graphics.PlayerDeath[i] = content.Load<Texture2D>("Graphics/imp/deth" + Math.Min((i + 1), 4));
 
+            Graphics.PossessAnimation = new Texture2D[6];
+            for (int i = 0; i < 6; i++)
+                Graphics.PossessAnimation[i] = content.Load<Texture2D>("Graphics/possess/possess" + (i + 1));
+
             Graphics.Tiles = content.Load<Texture2D>("Graphics/tiles");
+
+
+
+            Graphics.CopEvilGun = new Texture2D[7];
+            for (int i = 0; i < 7; i++)
+                Graphics.CopEvilGun[i] = content.Load<Texture2D>("Graphics/cop/evilcopgun" + (i));
+            
+            Graphics.CopEvilPrep = new Texture2D[7];
+            for (int i = 0; i < 7; i++)
+                Graphics.CopEvilPrep[i] = content.Load<Texture2D>("Graphics/cop/evilcopprep" + (i));
+            
+            Graphics.CopEvil = new Texture2D[7];
+            for (int i = 0; i < 7; i++)
+                Graphics.CopEvil[i] = content.Load<Texture2D>("Graphics/cop/evilcop" + (i));
+            
+            Graphics.CopGun = new Texture2D[7];
+            for (int i = 0; i < 7; i++)
+                Graphics.CopGun[i] = content.Load<Texture2D>("Graphics/cop/copgun" + (i));
+            
+            Graphics.CopLight = new Texture2D[7];
+            for (int i = 0; i < 7; i++)
+                Graphics.CopLight[i] = content.Load<Texture2D>("Graphics/cop/megacop" + (i));
+            
+            Graphics.CopPrep = new Texture2D[7];
+            for (int i = 0; i < 7; i++)
+                Graphics.CopPrep[i] = content.Load<Texture2D>("Graphics/cop/copprep" + (i));
+            
+            Graphics.Cop = new Texture2D[7];
+            for (int i = 0; i < 7; i++)
+                Graphics.Cop[i] = content.Load<Texture2D>("Graphics/cop/cop" + (i));
 
             //======================================================================
 
@@ -66,7 +100,16 @@ namespace StealthySatan
             public static Texture2D ManStand;
             public static Texture2D PossesedManStand;
             public static Texture2D[] PossesedManWalk;
+            public static Texture2D[] PossessAnimation;
             
+            public static Texture2D[] Cop;
+            public static Texture2D[] CopPrep;
+            public static Texture2D[] CopGun;
+            public static Texture2D[] CopLight;
+            public static Texture2D[] CopEvil;
+            public static Texture2D[] CopEvilPrep;
+            public static Texture2D[] CopEvilGun;
+
             public static Texture2D Tiles;
             public static Texture2D FadingTriangle;
             public static Texture2D FadingRectangle;

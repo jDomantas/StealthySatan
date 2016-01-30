@@ -10,7 +10,7 @@ namespace StealthySatan
     class Map
     {
         public const double TileSize = 1; // never ever change this 
-        public const double ViewScale = 30;
+        public const double ViewScale = 40;
 
         public int WidthInTiles { get; }
         public int HeightInTiles { get; }
@@ -92,9 +92,9 @@ namespace StealthySatan
 
         private void AddMapObjects()
         {
-            Entities.Add(new Policeman(this, new Vector(10, 15.4), 4, 13));
-            Entities.Add(new Policeman(this, new Vector(45, 15.4)));
-            Entities.Add(new Policeman(this, new Vector(30, 24.4)));
+            Entities.Add(new Policeman(this, new Vector(10, 15.4), 4, 13, false));
+            //Entities.Add(new Policeman(this, new Vector(45, 15.4), false));
+            //Entities.Add(new Policeman(this, new Vector(30, 24.4), true));
 
             Entities.Add(new Civilian(this, new Vector(45, 6.4)));
             //Entities.Add(new Civilian(this, new Vector(45, 15.4)));

@@ -205,7 +205,7 @@ namespace StealthySatan.Entities
         {
             if (Map.PlayerEntity.Removed)
                 return false;
-            if (Map.PlayerEntity.CurrentDisguise != Player.Disguise.Player)
+            if (Map.PlayerEntity.CurrentDisguise != Player.Disguise.Player && !Map.PlayerEntity.CanSeeThroughDisguise)
                 return false;
             if (!Map.PlayerEntity.InForeground)
                 return false;
