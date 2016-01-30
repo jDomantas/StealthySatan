@@ -175,6 +175,14 @@ namespace StealthySatan.Entities
                 (int)Math.Round(Width * 3 * Map.ViewScale),
                 (int)Math.Round(Height * 3 * Map.ViewScale));
 
+            int ow = rect.Width;
+            int oh = rect.Height;
+            double multiplier = (1.0 + InvisibilityProgress / 40.0);
+            rect.Width = (int)Math.Round(ow * multiplier);
+            rect.Height = (int)Math.Round(oh * multiplier);
+            rect.X -= (rect.Width - ow) / 2;
+            rect.Y -= (rect.Height - oh) / 2;
+
             Texture2D texture;
             if (InvisibilityProgress == 0)
             {
