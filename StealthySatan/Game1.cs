@@ -99,7 +99,7 @@ namespace StealthySatan
                 -centerY + graphics.PreferredBackBufferHeight / 2, 
                 0));
 
-            spriteBatch.Begin(samplerState: SamplerState.PointClamp, transformMatrix: m);
+            spriteBatch.Begin(transformMatrix: m);
             gameMap.Draw(spriteBatch);
             spriteBatch.End();
 

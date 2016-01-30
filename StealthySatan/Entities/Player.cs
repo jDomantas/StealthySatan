@@ -89,20 +89,35 @@ namespace StealthySatan.Entities
 
         public override void Draw(SpriteBatch sb)
         {
+            Rectangle rect = new Rectangle(
+                (int)Math.Round((Position.X - Width) * Map.ViewScale),
+                (int)Math.Round((Position.Y - Height * Math.Sqrt(2)) * Map.ViewScale),
+                (int)Math.Round(Width * 3 * Map.ViewScale),
+                (int)Math.Round(Height * 3 * Map.ViewScale));
+
             if (!InForeground)
             {
-                sb.Draw(Resources.Graphics.Player, GetScreenBounds(), new Rectangle(0, 200, 100, 100), Color.LightGray, 
+                sb.Draw(Resources.Graphics.PlayerStand, rect, null, Color.LightGray, 
                     0, Vector2.Zero, Facing == Direction.Left ? SpriteEffects.FlipHorizontally : SpriteEffects.None, 0);
             }
             else if (!OnGround)
             {
-                sb.Draw(Resources.Graphics.Player, GetScreenBounds(), new Rectangle(0, 100, 100, 100), Color.White,
+                int frame = 0;
+                if (Velocity.Y > -0.2) frame = 1;
+                if (Velocity.Y > 0) frame = 2;
+                if (Velocity.Y > 0.2) frame = 3;
+                sb.Draw(Resources.Graphics.PlayerWalk[frame], rect, null, Color.White,
+                    0, Vector2.Zero, Facing == Direction.Left ? SpriteEffects.FlipHorizontally : SpriteEffects.None, 0);
+            }
+            else if (DistanceWalked < 0.001)
+            {
+                sb.Draw(Resources.Graphics.PlayerStand, rect, null, Color.White,
                     0, Vector2.Zero, Facing == Direction.Left ? SpriteEffects.FlipHorizontally : SpriteEffects.None, 0);
             }
             else
             {
-                int frame = ((int)Math.Round(DistanceWalked * 2)) % 4;
-                sb.Draw(Resources.Graphics.Player, GetScreenBounds(), new Rectangle(100 * frame, 0, 100, 100), Color.White,
+                int frame = ((int)Math.Round(DistanceWalked * 2)) % 8;
+                sb.Draw(Resources.Graphics.PlayerWalk[frame], rect, null, Color.White,
                     0, Vector2.Zero, Facing == Direction.Left ? SpriteEffects.FlipHorizontally : SpriteEffects.None, 0);
             }
         }
