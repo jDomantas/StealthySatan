@@ -183,17 +183,24 @@ namespace StealthySatan.Entities
         }
 
         public bool CanSeeOther(Entity other) {
-            if ((Position - other.Position).Length / Map.TileSize > 50)
+            return CanSeeLocation(other.Position + new Vector(other.Width, other.Height) / 2);
+        }
+
+        public bool CanSeeLocation(Vector location)
+        {
+            if ((Position - location).Length / Map.TileSize > 50)
                 return false;
-            return Map.IsRectangleEmpty((int)Math.Floor((Position.X + Width/2)/Map.TileSize),
+            return Map.IsRectangleEmpty((int)Math.Floor((Position.X + Width / 2) / Map.TileSize),
                                         (int)Math.Floor((Position.Y + Height / 2) / Map.TileSize),
-                                        (int)Math.Floor((other.Position.X + other.Width / 2) / Map.TileSize),
-                                        (int)Math.Floor((other.Position.Y + other.Height / 2) / Map.TileSize));
+                                        (int)Math.Floor(location.X / Map.TileSize),
+                                        (int)Math.Floor(location.Y / Map.TileSize));
 
         }
 
         public bool CheckPlayerVisibility()
         {
+            if (!Map.PlayerEntity.InForeground)
+                return false;
             if (Map.PlayerEntity.Position.X + Map.PlayerEntity.Width / 2 > Position.X + Width / 2 && Facing == Direction.Left)
                 return false;
             if (Map.PlayerEntity.Position.X + Map.PlayerEntity.Width / 2 < Position.X + Width / 2 && Facing == Direction.Right)

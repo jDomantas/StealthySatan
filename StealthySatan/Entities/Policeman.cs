@@ -55,6 +55,13 @@ namespace StealthySatan.Entities
 
         public override void Update()
         {
+            if (CheckPlayerVisibility())
+            {
+                // shoot player instead
+                CurrentStrategy = Strategy.Check;
+                CheckX = Map.PlayerEntity.Position.X + Map.Random.NextDouble() * 2 - 1;
+            }
+
             if (CurrentStrategy == Strategy.Patrol)
             {
                 if (Facing == Direction.Left)
@@ -101,6 +108,15 @@ namespace StealthySatan.Entities
         public override void Draw(SpriteBatch sb)
         {
             sb.Draw(Resources.Graphics.Pixel, GetScreenBounds(), Facing == Direction.Left ? Color.Blue : Color.Green);
+        }
+
+        public override void AllarmTriggered(Vector location)
+        {
+            if (CurrentStrategy != Strategy.Check && CanSeeLocation(location))
+            {
+                CurrentStrategy = Strategy.Check;
+                CheckX = location.X + Map.Random.NextDouble() * 2 - 1;
+            }
         }
     }
 }

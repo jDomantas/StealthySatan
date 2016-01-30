@@ -77,6 +77,9 @@ namespace StealthySatan
 
 
             Entities.Add(PlayerEntity = new Player(this));
+            Entities.Add(new Policeman(this, new Vector(10, 15.4), 4, 13));
+            Entities.Add(new Policeman(this, new Vector(45, 15.4)));
+            Entities.Add(new Policeman(this, new Vector(30, 24.4)));
 
             AddPairOfStairaces(new Vector(30, 6), new Vector(30, 15));
             AddPairOfStairaces(new Vector(2, 15), new Vector(2, 24));
@@ -235,7 +238,10 @@ namespace StealthySatan
         /// </summary>
         public void TriggerAlarm()
         {
+            for (int i = Entities.Count - 1; i >= 0; i--)
+                Entities[i].AllarmTriggered(PlayerEntity.Position + new Vector(PlayerEntity.Width, PlayerEntity.Height) / 2);
 
+            // also start spawning policemen
         }
     }
 }
