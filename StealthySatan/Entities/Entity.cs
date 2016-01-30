@@ -181,5 +181,15 @@ namespace StealthySatan.Entities
                 (int)Math.Round(Width * Map.ViewScale),
                 (int)Math.Round(Height * Map.ViewScale));
         }
+
+        public bool CanSeeOther(Entity other) {
+            if ((Position - other.Position).Length / Map.TileSize > 50)
+                return false;
+            return Map.IsRectangleEmpty((int)Math.Floor((Position.X + Width/2)/Map.TileSize),
+                                        (int)Math.Floor((Position.Y + Height / 2) / Map.TileSize),
+                                        (int)Math.Floor((other.Position.X + other.Width / 2) / Map.TileSize),
+                                        (int)Math.Floor((other.Position.Y + other.Height / 2) / Map.TileSize));
+
+        }
     }
 }

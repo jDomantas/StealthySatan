@@ -22,6 +22,8 @@ namespace StealthySatan
 
         public Player PlayerEntity { get; private set; }
 
+        public Random Random { get; }
+
         public Map(int width, int height, Texture2D createFrom)
         {
             WidthInTiles = width;
@@ -31,6 +33,8 @@ namespace StealthySatan
             Entities = new List<Entity>();
             LitAreas = new List<LitArea>();
             Staircases = new List<Staircase>();
+
+            Random = new Random((int)DateTime.Now.Ticks);
 
             Color[] textureData = new Color[WidthInTiles * HeightInTiles];
             createFrom.GetData(textureData);
@@ -184,6 +188,40 @@ namespace StealthySatan
         {
             for (int i = 0; i < LitAreas.Count; i++)
                 LitAreas[i].Draw(sb);
+        }
+
+        public bool IsRectangleEmpty(int x1, int y1, int x2, int y2)
+        {
+            if (x1 < 0) x1 = 0;
+            if (y1 < 0) y1 = 0;
+            if (x2 < 0) x2 = 0;
+            if (y2 < 0) y2 = 0;
+
+            if (x1 >= WidthInTiles) x1 = WidthInTiles - 1;
+            if (y1 >= HeightInTiles) y1 = HeightInTiles - 1;
+            if (x2 >= WidthInTiles) x2 = WidthInTiles - 1;
+            if (y2 >= HeightInTiles) y2 = HeightInTiles - 1;
+
+            if (x2 < x1)
+            {
+                int tmp = x2;
+                x2 = x1;
+                x1 = tmp;
+            }
+
+            if (y2 < y1)
+            {
+                int tmp = y2;
+                y2 = y1;
+                y1 = tmp;
+            }
+
+            for (int x = x1; x <= x2; x++)
+                for (int y = y1; y <= y2; y++)
+                    if (Tiles[x, y].Foreground != Tile.BlockType.None && Tiles[x, y].Foreground != Tile.BlockType.Lamp)
+                        return false;
+
+            return true;
         }
     }
 }
