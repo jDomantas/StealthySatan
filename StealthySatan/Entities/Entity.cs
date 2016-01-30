@@ -37,7 +37,7 @@ namespace StealthySatan.Entities
             Facing = Direction.Left;
         }
 
-        public void Kill() {
+        public virtual void Kill() {
             Removed = true;
         }
 
@@ -221,6 +221,11 @@ namespace StealthySatan.Entities
             return false;
         }
 
+        public Vector GetCenter()
+        {
+            return new Vector(Position.X + Width/2, Position.Y + Height/2);
+        }
+
         public virtual void AllarmTriggered(Vector location)
         {
 
@@ -232,6 +237,11 @@ namespace StealthySatan.Entities
                    Position.Y <= other.Position.Y + other.Height &&
                    other.Position.X <= Position.X + Width &&
                    other.Position.Y <= Position.Y + Height;
-        } 
+        }
+
+        public virtual void CallFromStaircase(Staircase s)
+        {
+
+        }
     }
 }

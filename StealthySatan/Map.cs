@@ -3,6 +3,7 @@ using Microsoft.Xna.Framework.Graphics;
 using StealthySatan.Entities;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace StealthySatan
 {
@@ -23,10 +24,13 @@ namespace StealthySatan
         private List<Entity> Entities;
         private List<LitArea> LitAreas;
         private List<Staircase> Staircases;
+        private List<Particle> Particles;
 
         public Player PlayerEntity { get; private set; }
 
         public Random Random { get; }
+
+        private int TicksWithoutPlayer;
 
         public Map(int width, int height, Texture2D createFrom)
         {
@@ -37,6 +41,7 @@ namespace StealthySatan
             Entities = new List<Entity>();
             LitAreas = new List<LitArea>();
             Staircases = new List<Staircase>();
+            Particles = new List<Particle>();
 
             Random = new Random((int)DateTime.Now.Ticks);
 
@@ -47,17 +52,6 @@ namespace StealthySatan
 
             InitMap(createFrom);
             AddMapObjects();
-
-            //Entities.Add(new Policeman(this, new Vector(10, 15.4), 4, 13));
-            //Entities.Add(new Policeman(this, new Vector(45, 15.4)));
-            //Entities.Add(new Policeman(this, new Vector(30, 24.4)));
-
-            //Entities.Add(new Civilian(this, new Vector(10, 15.4)));
-            //Entities.Add(new Civilian(this, new Vector(45, 15.4)));
-            //Entities.Add(new Civilian(this, new Vector(30, 24.4)));
-            //
-            //AddPairOfStairaces(new Vector(30, 6), new Vector(30, 15));
-            //AddPairOfStairaces(new Vector(2, 15), new Vector(2, 24));
         }
 
         private void InitMap(Texture2D texture)
@@ -98,7 +92,16 @@ namespace StealthySatan
 
         private void AddMapObjects()
         {
+            Entities.Add(new Policeman(this, new Vector(10, 15.4), 4, 13));
+            Entities.Add(new Policeman(this, new Vector(45, 15.4)));
+            Entities.Add(new Policeman(this, new Vector(30, 24.4)));
 
+            Entities.Add(new Civilian(this, new Vector(45, 6.4)));
+            //Entities.Add(new Civilian(this, new Vector(45, 15.4)));
+            //Entities.Add(new Civilian(this, new Vector(30, 24.4)));
+            
+            AddPairOfStairaces(new Vector(30, 6), new Vector(30, 15));
+            AddPairOfStairaces(new Vector(2, 15), new Vector(2, 24));
         }
 
         private void AddPairOfStairaces(Vector pos1, Vector pos2)
@@ -110,12 +113,17 @@ namespace StealthySatan
             Staircases.Add(first);
             Staircases.Add(second);
         }
-            
+
         public void AddEntity(Entity e)
         {
             // lol
             //Entities = new List<Entity>();
             Entities.Add(e);
+        }
+
+        public void AddParticle(Particle p)
+        {
+            Particles.Add(p);
         }
 
         /// <summary>
@@ -188,12 +196,24 @@ namespace StealthySatan
 
         public void Update()
         {
-            if (PlayerEntity.Removed) return;
+            if (PlayerEntity.Removed)
+            {
+                TicksWithoutPlayer++;
+                if (TicksWithoutPlayer > 120)
+                    PlayerEntity.Respawn();
+            }
+            else
+                TicksWithoutPlayer = 0;
 
             for (int i = Entities.Count - 1; i >= 0; i--)
                 Entities[i].Update();
 
             Entities.RemoveAll(e => e.Removed);
+
+            for (int i = Particles.Count - 1; i >= 0; i--)
+                Particles[i].Update();
+
+            Particles.RemoveAll(e => e.Removed);
         }
 
         public void Draw(SpriteBatch sb)
@@ -211,6 +231,9 @@ namespace StealthySatan
 
             for (int i = 0; i < Entities.Count; i++)
                 Entities[i].Draw(sb);
+
+            for (int i = 0; i < Particles.Count; i++)
+                Particles[i].Draw(sb);
 
             for (int y = HeightInTiles - 1; y >= 0; y--)
                 for (int x = WidthInTiles - 1; x >= 0; x--)
@@ -266,6 +289,12 @@ namespace StealthySatan
                 Entities[i].AllarmTriggered(PlayerEntity.Position + new Vector(PlayerEntity.Width, PlayerEntity.Height) / 2);
 
             // also start spawning policemen
+
+            foreach (var s in Staircases
+                    .Where(st => PlayerEntity.CanSeeLocation(st.Location + new Vector(Staircase.Width, Staircase.Height) / 2))
+                    .Select(st => st.Other))
+                for (int i = Entities.Count - 1; i >= 0; i--)
+                    Entities[i].CallFromStaircase(s); 
         }
     }
 }

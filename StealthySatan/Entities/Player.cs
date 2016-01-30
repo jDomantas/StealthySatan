@@ -17,12 +17,33 @@ namespace StealthySatan.Entities
         private bool LightImmune;
         private int InvisibilityProgress;
         public Disguise CurrentDisguise { get; private set; }
-
+        
         public Player(Map map) : base(map, 0.9, 0.9)
         {
             Velocity = Vector.Zero;
             Position = new Vector(5, 5);
             CurrentDisguise = Disguise.Player;
+        }
+
+        public override void Kill()
+        {
+            base.Kill();
+
+            int direction = Facing == Direction.Left ? 1 : -1;
+            Rectangle rect = new Rectangle(
+                (int)Math.Round((Position.X - Width + Width * direction * InvisibilityProgress / 20) * Map.ViewScale),
+                (int)Math.Round((Position.Y - Height * Math.Sqrt(2) + InvisibilityProgress * Height / 15) * Map.ViewScale),
+                (int)Math.Round(Width * 3 * Map.ViewScale),
+                (int)Math.Round(Height * 3 * Map.ViewScale));
+            Map.AddParticle(new Particle(rect, Resources.Graphics.PlayerDeath, 80, Facing == Direction.Left));
+        }
+
+        public void Respawn()
+        {
+            Position = new Vector(1.05,1.05);
+            Removed = false;
+            InForeground = false;
+            Map.AddEntity(this);
         }
 
         private void CheckForPossesions()

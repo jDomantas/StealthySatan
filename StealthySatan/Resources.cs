@@ -39,6 +39,10 @@ namespace StealthySatan
             for (int i = 0; i < 3; i++)
                 Graphics.PlayerFade[i] = content.Load<Texture2D>("Graphics/imp/dissapear" + (i + 1));
 
+            Graphics.PlayerDeath = new Texture2D[8];
+            for (int i = 0; i < 8; i++)
+                Graphics.PlayerDeath[i] = content.Load<Texture2D>("Graphics/imp/deth" + Math.Min((i + 1), 4));
+
             Graphics.Tiles = content.Load<Texture2D>("Graphics/tiles");
 
             //======================================================================
@@ -61,6 +65,7 @@ namespace StealthySatan
             public static Texture2D PossesedManStand;
             public static Texture2D[] PossesedManWalk;
             public static Texture2D[] PlayerFade;
+            public static Texture2D[] PlayerDeath;
             public static Texture2D Tiles;
             public static Texture2D FadingTriangle;
             public static Texture2D FadingRectangle;

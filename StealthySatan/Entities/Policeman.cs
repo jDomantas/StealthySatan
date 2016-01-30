@@ -18,6 +18,7 @@ namespace StealthySatan.Entities
         private double StartX;
         private double CheckX;
         private int LookTime, TimeSpentChecking;
+        private Staircase GoalStaircase;
 
 
 
@@ -33,6 +34,7 @@ namespace StealthySatan.Entities
             CurrentStrategy = OriginalStrategy = Strategy.LookAround;
             Facing = Map.Random.Next(2) == 1 ? Direction.Left : Direction.Right;
             LookTime = Map.Random.Next(300);
+            GoalStaircase = null;
         }
 
         /// <summary>
@@ -65,7 +67,33 @@ namespace StealthySatan.Entities
                 CheckX = Map.PlayerEntity.Position.X + Map.Random.NextDouble() * 2 - 1;
             }
 
-            if (CurrentStrategy == Strategy.Patrol)
+            if (CurrentStrategy != Strategy.Check && GoalStaircase != null)
+            {
+                if (GetCenter().X < GoalStaircase.GetCenter().X - 0.5)
+                {
+                    MoveHorizontal(MoveSpeed * 1.2);
+                    DistanceWalked += MoveSpeed * 1.2;
+                    Facing = Direction.Right;
+                }
+                else if (GetCenter().X > GoalStaircase.GetCenter().X + 0.5)
+                {
+                    MoveHorizontal(-MoveSpeed * 1.2);
+                    DistanceWalked += MoveSpeed * 1.2;
+                    Facing = Direction.Left;
+                }
+                else
+                {
+                    Position = new Vector(
+                        GoalStaircase.Other.Location.X + Staircase.Width / 2 - Width / 2,
+                        GoalStaircase.Other.Location.Y + Staircase.Height - Height);
+
+                    CurrentStrategy = OriginalStrategy = Strategy.LookAround;
+                    StartX = GetCenter().X + Map.Random.NextDouble() * 8 - 4;
+                    LookTime = 40 + Map.Random.Next(20);
+                    GoalStaircase = null;
+                }
+            }
+            else if (CurrentStrategy == Strategy.Patrol)
             {
                 if (Facing == Direction.Left)
                 {
@@ -164,6 +192,12 @@ namespace StealthySatan.Entities
                 TimeSpentChecking = 0;
                 CheckX = location.X + Map.Random.NextDouble() * 2 - 1;
             }
+        }
+
+        public override void CallFromStaircase(Staircase s)
+        {
+            if(CurrentStrategy != Strategy.Check && CanSeeLocation(s.GetCenter()))
+                GoalStaircase = s;
         }
     }
 }

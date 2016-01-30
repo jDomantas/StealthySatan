@@ -38,5 +38,10 @@ namespace StealthySatan
                 (int)(Height * Map.ViewScale)), 
                 Color.DarkGray);
         }
+
+        public Vector GetCenter()
+        {
+            return new Vector(Location.X + Width/2, Location.Y + Height/2);
+        }
     }
 }
