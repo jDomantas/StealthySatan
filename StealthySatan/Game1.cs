@@ -30,7 +30,8 @@ namespace StealthySatan
         {
             base.Initialize();
 
-            using (var file = System.IO.File.OpenRead("level.png"))
+            //using (var file = System.IO.File.OpenRead("level1.png"))
+            using (var file = System.IO.File.OpenRead("level0.png"))
             {
                 Texture2D map = Texture2D.FromStream(GraphicsDevice, file);
                 gameMap = new Map(map.Width, map.Height, map);
@@ -80,7 +81,8 @@ namespace StealthySatan
             Resources.Load(Content);
 
             MediaPlayer.Volume = 0.4f;
-            MediaPlayer.Play(Resources.Audio.IntenseMusic);
+            //MediaPlayer.Play(Resources.Audio.IntenseMusic);
+            MediaPlayer.Play(Resources.Audio.CalmMusic);
             MediaPlayer.IsRepeating = true;
         }
         

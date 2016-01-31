@@ -27,7 +27,8 @@ namespace StealthySatan.Entities
         public Player(Map map) : base(map, 0.9, 0.9)
         {
             Velocity = Vector.Zero;
-            Position = new Vector(5, 5);
+            //Position = new Vector(5, 5);
+            Position = new Vector(5,10);
             CurrentDisguise = Disguise.Player;
         }
 
@@ -46,7 +47,9 @@ namespace StealthySatan.Entities
 
         public void Respawn()
         {
-            Position = new Vector(1.05, 1.05);
+            //Position = new Vector(1.05, 1.05);
+            Position = new Vector(5, 10);
+
             Removed = false;
             InForeground = false;
             CurrentDisguise = Disguise.Player;

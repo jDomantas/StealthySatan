@@ -10,7 +10,7 @@ namespace StealthySatan
     class Map
     {
         public const double TileSize = 1; // never ever change this 
-        public const double ViewScale = 40;
+        public const double ViewScale = 10;//40;
 
         public int WidthInTiles { get; }
         public int HeightInTiles { get; }
@@ -81,6 +81,12 @@ namespace StealthySatan
                             textureData[x + y * WidthInTiles - 1] == new Color(237, 28, 36))
                             LitAreas.Add(new LitArea(x + 0.6, y + 0.4, 5.5, 2.3, 8));
                     }
+                    else if (textureData[x + y * WidthInTiles] == new Color(200, 0, 100))
+                    {
+
+                        Tiles[x, y] = new Tile(Tile.BackType.Wall, Tile.BlockType.None, Tile.BlockType.Lamp);
+
+                    }
                     else if (textureData[x + y * WidthInTiles] == new Color(0, 255, 0))
                     {
                         Tiles[x, y] = new Tile(Tile.BackType.Wall, Tile.BlockType.Transparent, Tile.BlockType.None);
@@ -93,20 +99,40 @@ namespace StealthySatan
                     {
                         Tiles[x, y] = new Tile(Tile.BackType.Wall, Tile.BlockType.Photocopy, Tile.BlockType.None);
                     }
+                    else if (textureData[x + y * WidthInTiles] == new Color(0, 255, 255))
+                    {
+                        Tiles[x, y] = new Tile(Tile.BackType.None, Tile.BlockType.Node, Tile.BlockType.None);
+                    }
+                    else
+                    {
+                        Tiles[x, y] = new Tile(Tile.BackType.Wall, Tile.BlockType.None, Tile.BlockType.None);
+                    }
         }
 
         private void AddMapObjects()
         {
-            Entities.Add(new Policeman(this, new Vector(10, 15.4), 4, 13, false));
-            Entities.Add(new Policeman(this, new Vector(45, 6.4), false));
-            Entities.Add(new Policeman(this, new Vector(30, 24.4), true));
+            //Entities.Add(new Policeman(this, new Vector(10, 15.4), 4, 13, false));
+            //Entities.Add(new Policeman(this, new Vector(45, 6.4), false));
+            //Entities.Add(new Policeman(this, new Vector(30, 24.4), true));
+            //
+            //Entities.Add(new Civilian(this, new Vector(45, 6.4)));
+            //Entities.Add(new Civilian(this, new Vector(45, 15.4)));
+            //Entities.Add(new Civilian(this, new Vector(30, 24.4)));
+            //
+            //AddPairOfStairaces(new Vector(30, 6), new Vector(30, 15));
+            //AddPairOfStairaces(new Vector(2, 15), new Vector(2, 24));
+
+            Entities.Add(new Policeman(this, new Vector(12, 21), false, false, false));
+            Entities.Add(new Policeman(this, new Vector(11, 36), false, false, true));
+            Entities.Add(new Policeman(this, new Vector(50, 36), false, true, false));
             
-            Entities.Add(new Civilian(this, new Vector(45, 6.4)));
-            Entities.Add(new Civilian(this, new Vector(45, 15.4)));
-            Entities.Add(new Civilian(this, new Vector(30, 24.4)));
-            
-            AddPairOfStairaces(new Vector(30, 6), new Vector(30, 15));
-            AddPairOfStairaces(new Vector(2, 15), new Vector(2, 24));
+            Entities.Add(new Civilian(this, new Vector(44, 21)));
+            Entities.Add(new Civilian(this, new Vector(34, 36)));
+            Entities.Add(new Civilian(this, new Vector(68, 20)));
+            Entities.Add(new Civilian(this, new Vector(72, 20)));
+
+            AddPairOfStairaces(new Vector(49, 4), new Vector(49, 21));
+            AddPairOfStairaces(new Vector(8, 21), new Vector(8,36));
         }
 
         private void AddPairOfStairaces(Vector pos1, Vector pos2)

@@ -20,7 +20,7 @@ namespace StealthySatan.Entities
         private double CheckX;
         private int LookTime, TimeSpentChecking, ShootingTimer, ForceGun;
         private Staircase GoalStaircase;
-        private bool GunAlwaysUp;
+        private bool GunAlwaysUp, Locked;
         
         
         /// <summary>
@@ -28,12 +28,22 @@ namespace StealthySatan.Entities
         /// </summary>
         /// <param name="map"></param>
         /// <param name="position"></param>
-        public Policeman(Map map, Vector position, bool gunAlwaysUp) : base(map, 1.6, 2.3) // Look around
+        public Policeman(Map map, Vector position, bool gunAlwaysUp, bool lockLeft, bool lockRight) : base(map, 1.6, 2.3) // Look around
         {
             Position = position;
             StartX = position.X;
             CurrentStrategy = OriginalStrategy = Strategy.LookAround;
             Facing = Map.Random.Next(2) == 1 ? Direction.Left : Direction.Right;
+            if (lockLeft)
+            {
+                Facing = Direction.Left;
+                Locked = true;
+            }
+            else if (lockRight)
+            {
+                Facing = Direction.Right;
+                Locked = true;
+            }
             LookTime = Map.Random.Next(300);
             GoalStaircase = null;
             GunAlwaysUp = gunAlwaysUp;
@@ -46,7 +56,7 @@ namespace StealthySatan.Entities
         /// <param name="position"></param>
         /// <param name="x1"></param>
         /// <param name="x2"></param>
-        public Policeman(Map map, Vector position, double x1, double x2, bool gunAlwaysUp) : this(map, position, gunAlwaysUp)
+        public Policeman(Map map, Vector position, double x1, double x2, bool gunAlwaysUp, bool lockLeft, bool lockRight) : this(map, position, gunAlwaysUp, lockLeft, lockRight)
         {
             CurrentStrategy = OriginalStrategy = Strategy.Patrol;
             if (x2 < x1)
@@ -148,7 +158,7 @@ namespace StealthySatan.Entities
                     if (LookTime <= 0)
                     {
                         LookTime = 200 + Map.Random.Next(100);
-                        Facing = (Direction)(1 - (int)Facing);
+                        if(!Locked) Facing = (Direction)(1 - (int)Facing);
                     }
                 }
             }

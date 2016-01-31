@@ -99,6 +99,10 @@ namespace StealthySatan
                 Graphics.MegaCopDeath[i] = content.Load<Texture2D>("Graphics/cop/death/copmegadeth" + (i+1));
 
 
+            Graphics.Nodes = new Texture2D[6];
+            for (int i = 0; i < 6; i++)
+                Graphics.Nodes[i] = content.Load<Texture2D>("Graphics/nodes/node" + i );
+
             Graphics.Filing1 = content.Load<Texture2D>("Graphics/environment/filing1");
             Graphics.Filing2 = content.Load<Texture2D>("Graphics/environment/filing2");
             Graphics.Photocopy = content.Load<Texture2D>("Graphics/environment/photocopy");
@@ -156,6 +160,8 @@ namespace StealthySatan
             public static Texture2D Filing1;
             public static Texture2D Filing2;
             public static Texture2D Photocopy;
+
+            public static Texture2D[] Nodes;
 
             public static Texture2D Tiles;
             public static Texture2D Door;
