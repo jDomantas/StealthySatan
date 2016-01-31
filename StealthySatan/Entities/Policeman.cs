@@ -59,6 +59,19 @@ namespace StealthySatan.Entities
             PatrolXRight = x2;
         }
 
+        public override void Kill()
+        {
+            var rect = new Rectangle(
+                   (int)Math.Round((Position.X - Width) * Map.ViewScale),
+                   (int)Math.Round((Position.Y - Height * 0.59) * Map.ViewScale),
+                   (int)Math.Round(Width * 2.7 * Map.ViewScale),
+                   (int)Math.Round(Width * 2.7 / 600 * 512 * Map.ViewScale));
+
+            Map.AddParticle(new Particle(rect, Resources.Graphics.CopDeath, 25, Facing == Direction.Left));
+
+            base.Kill();
+        }
+
         public override void Update()
         {
             if (ForceGun > 0) ForceGun--;
@@ -70,6 +83,7 @@ namespace StealthySatan.Entities
                     // in shooting position
                     if (GunAlwaysUp || ShootingTimer++ >= 10)
                     {
+                        Resources.Audio.GunShot.CreateInstance().Play();
                         Map.PlayerEntity.Kill();
                         ForceGun = 45;
                     }
@@ -183,6 +197,21 @@ namespace StealthySatan.Entities
 
             sb.Draw(texture, rect, null, Color.White, 0, Vector2.Zero,
                 Facing == Direction.Left ? SpriteEffects.FlipHorizontally : SpriteEffects.None, 0);
+
+            if (ForceGun == 45)
+            {
+                int index = 0;
+                if (DistanceWalked != 0) index = ((int)Math.Floor(DistanceWalked * 2)) % 6 + 1;
+                sb.Draw(Resources.Graphics.Muzzle1[index], rect, null, Color.White, 0, Vector2.Zero,
+                Facing == Direction.Left ? SpriteEffects.FlipHorizontally : SpriteEffects.None, 0);
+            }
+            else if (ForceGun == 44)
+            {
+                int index = 0;
+                if (DistanceWalked != 0) index = ((int)Math.Floor(DistanceWalked * 2)) % 6 + 1;
+                sb.Draw(Resources.Graphics.Muzzle2[index], rect, null, Color.White, 0, Vector2.Zero,
+                Facing == Direction.Left ? SpriteEffects.FlipHorizontally : SpriteEffects.None, 0);
+            }
         }
 
         public override void AllarmTriggered(Vector location)

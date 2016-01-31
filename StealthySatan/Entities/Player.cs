@@ -59,9 +59,15 @@ namespace StealthySatan.Entities
                 return;
 
             if (col is Policeman)
+            {
+                Resources.Audio.Possession.CreateInstance().Play();
                 CurrentDisguise = Disguise.Policeman;
+            }
             else if (col is Civilian)
+            {
+                Resources.Audio.Possession.CreateInstance().Play();
                 CurrentDisguise = Disguise.Civilian;
+            }
             else
                 return;
 
@@ -114,7 +120,10 @@ namespace StealthySatan.Entities
                         DistanceWalked = 0;
 
                     if (OnGround && InputHandler.IsTyped(InputHandler.Key.Up) && CurrentDisguise == Disguise.Player)
+                    {
                         Velocity.Y = -JumpPower;
+                        Resources.Audio.SatanJump.CreateInstance().Play();
+                    }
                 }
                 else
                     StunTimer--;
@@ -162,7 +171,10 @@ namespace StealthySatan.Entities
                 if (InputHandler.IsTyped(InputHandler.Key.Hide))
                 {
                     if ((!InForeground || !Map.IntersectsObjects(this)) && CurrentDisguise == Disguise.Player)
+                    {
+                        Resources.Audio.ShadowTransition.CreateInstance().Play();
                         InForeground = !InForeground;
+                    }
                     else if (CurrentDisguise != Disguise.Player && CurrentDisguise != Disguise.Invisible)
                     {
                         var rect = new Rectangle(
@@ -172,9 +184,15 @@ namespace StealthySatan.Entities
                                (int)Math.Round(1.6 * 2.7 / 600 * 512 * Map.ViewScale));
 
                         if (CurrentDisguise == Disguise.Civilian)
+                        {
+                            Resources.Audio.Death.CreateInstance().Play();
                             Map.AddParticle(new Particle(rect, Resources.Graphics.ManDeath, 25, Facing == Direction.Left));
+                        }
                         else if (CurrentDisguise == Disguise.Policeman)
-                            Map.AddParticle(new Particle(rect, Resources.Graphics.ManDeath, 25, Facing == Direction.Left));
+                        {
+                            Resources.Audio.Death.CreateInstance().Play();
+                            Map.AddParticle(new Particle(rect, Resources.Graphics.CopDeath, 25, Facing == Direction.Left));
+                        }
 
                         CurrentDisguise = Disguise.Player;
                         StunTimer = 40;
@@ -196,6 +214,7 @@ namespace StealthySatan.Entities
             {
                 if (InputHandler.IsTyped(InputHandler.Key.Down) && StunTimer <= 0)
                 {
+                    Resources.Audio.GunShot.CreateInstance().Play();
                     ShootTimer = 30;
                 }
             }
@@ -222,6 +241,22 @@ namespace StealthySatan.Entities
 
             sb.Draw(texture, rect, null, Color.White, 0, Vector2.Zero,
                 Facing == Direction.Left ? SpriteEffects.FlipHorizontally : SpriteEffects.None, 0);
+
+            if (ShootTimer == 28)
+            {
+                int index = 0;
+                if (DistanceWalked != 0) index = ((int)Math.Floor(DistanceWalked * 2)) % 6 + 1;
+                sb.Draw(Resources.Graphics.Muzzle1[index], rect, null, Color.White, 0, Vector2.Zero,
+                Facing == Direction.Left ? SpriteEffects.FlipHorizontally : SpriteEffects.None, 0);
+            }
+            else if (ShootTimer == 27)
+            {
+                int index = 0;
+                if (DistanceWalked != 0) index = ((int)Math.Floor(DistanceWalked * 2)) % 6 + 1;
+                sb.Draw(Resources.Graphics.Muzzle2[index], rect, null, Color.White, 0, Vector2.Zero,
+                Facing == Direction.Left ? SpriteEffects.FlipHorizontally : SpriteEffects.None, 0);
+            }
+
         }
 
         public void DrawAsCivilian(SpriteBatch sb)

@@ -40,6 +40,7 @@ namespace StealthySatan.Entities
 
         public virtual void Kill() {
             Removed = true;
+            Resources.Audio.Death.CreateInstance().Play();
         }
 
         public virtual void Update() { }
