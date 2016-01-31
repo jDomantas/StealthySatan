@@ -80,7 +80,7 @@ namespace StealthySatan
             Resources.Load(Content);
 
             MediaPlayer.Volume = 0.4f;
-            MediaPlayer.Play(Resources.Audio.BackgroundMusic);
+            MediaPlayer.Play(Resources.Audio.IntenseMusic);
             MediaPlayer.IsRepeating = true;
         }
         

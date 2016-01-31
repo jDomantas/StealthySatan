@@ -1591,3 +1591,15 @@
 /processorParam:TextureFormat=Color
 /build:Graphics/environment/photocopy.png
 
+#begin Audio/music/intense.wav
+/importer:WavImporter
+/processor:SongProcessor
+/processorParam:Quality=Best
+/build:Audio/music/intense.wav
+
+#begin Audio/music/calm.wav
+/importer:WavImporter
+/processor:SongProcessor
+/processorParam:Quality=Best
+/build:Audio/music/calm.wav
+

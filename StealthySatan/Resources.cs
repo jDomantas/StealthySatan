@@ -107,6 +107,8 @@ namespace StealthySatan
             //======================================================================
 
             Audio.BackgroundMusic = content.Load<Song>("Audio/music/bgmusic");
+            Audio.IntenseMusic = content.Load<Song>("Audio/music/intense");
+            Audio.CalmMusic = content.Load<Song>("Audio/music/calm");
 
             Audio.SatanJump = content.Load<SoundEffect>("Audio/sfx/Satan/jump");
             Audio.Possession = content.Load<SoundEffect>("Audio/sfx/Satan/possession");
@@ -166,6 +168,8 @@ namespace StealthySatan
         public static class Audio
         {
             public static Song BackgroundMusic;
+            public static Song IntenseMusic;
+            public static Song CalmMusic;
 
             public static SoundEffect SatanJump;
             public static SoundEffect Possession;
