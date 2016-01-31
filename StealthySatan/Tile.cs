@@ -51,11 +51,11 @@ namespace StealthySatan
             }
 
             sb.Draw(Resources.Graphics.Tiles, new Rectangle(
-                        (int)((x - 0.2) * Map.ViewScale),
-                        (int)((y - 0.2) * Map.ViewScale),
+                        (int)((x - 0.2) * Map.ViewScale + 2),
+                        (int)((y - 0.2) * Map.ViewScale + 2),
                         (int)Map.ViewScale,
                         (int)Map.ViewScale),
-                        new Rectangle(index * 30, 0, 25, 25), Color.White);
+                        new Rectangle(index * 30 + 1, 1, 25, 25), Color.White);
         }
 
         public virtual void DrawBackgroundLayer(SpriteBatch sb, int x, int y)

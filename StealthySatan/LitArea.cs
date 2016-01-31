@@ -10,7 +10,7 @@ namespace StealthySatan
 {
     class LitArea
     {
-        private const int LightAlpha = 10;
+        private const int LightAlpha = 14;
         private const int LightValue = 255;
         private readonly Color LightColor = new Color(LightValue, LightValue, LightValue, LightAlpha);
 
