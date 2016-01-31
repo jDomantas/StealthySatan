@@ -7,7 +7,7 @@ namespace StealthySatan
     class Tile
     {
         public enum BackType { None, Ventilation, Wall }
-        public enum BlockType { None, Lamp, Wall, Floor, Ceiling, Crate }
+        public enum BlockType { None, Lamp, Wall, Floor, Ceiling, Crate, Transparent, Filing1, Filing2, Photocopy }
 
         public BackType Back { get; }
         public BlockType Background { get; protected set; }
@@ -15,7 +15,7 @@ namespace StealthySatan
 
         public Tile(BackType back, BlockType background, BlockType foreground)
         {
-            if (background == BlockType.None && foreground != BlockType.None && foreground != BlockType.Lamp)
+            if (IsSolid(Foreground) && ! IsSolid(Background))
                 throw new System.Exception("no");
 
             Back = back;
@@ -23,10 +23,15 @@ namespace StealthySatan
             Foreground = foreground;
         }
 
+        static bool IsSolid(BlockType b)
+        {
+            return b != BlockType.None && b != BlockType.Lamp;
+        }
+
         public virtual bool CanPass(Entity e)
         {
-            if (e.InForeground) return Foreground == BlockType.None || Foreground == BlockType.Lamp;
-            else return Background == BlockType.None;
+            if (e.InForeground) return !IsSolid(Foreground);
+            else return !IsSolid(Background);
         }
 
         public virtual void DrawBackground(SpriteBatch sb, int x, int y)
@@ -77,6 +82,10 @@ namespace StealthySatan
                 case BlockType.Floor: index = 3; break;
                 case BlockType.Wall: index = 4; break;
                 case BlockType.Lamp: index = 6; break;
+                case BlockType.Filing1: sb.Draw(Resources.Graphics.Filing1, new Rectangle(x, y, (int)(Map.ViewScale * 1.2), (int)(Map.ViewScale * 3.2)), new Rectangle(77, 60, 210, 627), Color.White); return;
+                case BlockType.Filing2: sb.Draw(Resources.Graphics.Filing2, new Rectangle(x, y, (int)(Map.ViewScale * 1.2), (int)(Map.ViewScale * 3.2)), new Rectangle(77, 60, 210, 627), Color.White); return;
+                case BlockType.Transparent: return;
+                case BlockType.Photocopy: sb.Draw(Resources.Graphics.Photocopy, new Rectangle((int)(x-120/190.0*Map.ViewScale),(int)(y-120/190.0*Map.ViewScale),(int)(Map.ViewScale*630/190.0), (int)(Map.ViewScale*539/190.0)), Color.White); return;
                 case BlockType.None: return;
             }
 

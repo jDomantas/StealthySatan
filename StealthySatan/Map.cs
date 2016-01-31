@@ -17,10 +17,6 @@ namespace StealthySatan
 
         private Tile[,] Tiles { get; }
 
-        private int GuardsToSpawn;
-        private int NextGuardTimer;
-        private Vector GuardTarget;
-
         private List<Entity> Entities;
         private List<LitArea> LitAreas;
         private List<Staircase> Staircases;
@@ -44,10 +40,7 @@ namespace StealthySatan
             Particles = new List<Particle>();
 
             Random = new Random((int)DateTime.Now.Ticks);
-
-            GuardsToSpawn = 0;
             
-
             Entities.Add(PlayerEntity = new Player(this));
 
             InitMap(createFrom);
@@ -87,6 +80,18 @@ namespace StealthySatan
                             textureData[x + y * WidthInTiles + 1] == new Color(237, 28, 36) &&
                             textureData[x + y * WidthInTiles - 1] == new Color(237, 28, 36))
                             LitAreas.Add(new LitArea(x + 0.6, y + 0.4, 5.5, 2.3, 8));
+                    }
+                    else if (textureData[x + y * WidthInTiles] == new Color(0, 255, 0))
+                    {
+                        Tiles[x, y] = new Tile(Tile.BackType.Wall, Tile.BlockType.Transparent, Tile.BlockType.None);
+                    }
+                    else if (textureData[x + y * WidthInTiles] == new Color(0, 128, 0))
+                    {
+                        Tiles[x, y] = new Tile(Tile.BackType.Wall, Random.Next(2) == 0 ? Tile.BlockType.Filing1 : Tile.BlockType.Filing2, Tile.BlockType.None);
+                    }
+                    else if (textureData[x + y * WidthInTiles] == new Color(0, 192, 0))
+                    {
+                        Tiles[x, y] = new Tile(Tile.BackType.Wall, Tile.BlockType.Photocopy, Tile.BlockType.None);
                     }
         }
 

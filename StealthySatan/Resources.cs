@@ -98,6 +98,12 @@ namespace StealthySatan
             for (int i = 0; i < 4; i++)
                 Graphics.MegaCopDeath[i] = content.Load<Texture2D>("Graphics/cop/death/copmegadeth" + (i+1));
 
+
+            Graphics.Filing1 = content.Load<Texture2D>("Graphics/environment/filing1");
+            Graphics.Filing2 = content.Load<Texture2D>("Graphics/environment/filing2");
+            Graphics.Photocopy = content.Load<Texture2D>("Graphics/environment/photocopy");
+
+
             //======================================================================
 
             Audio.BackgroundMusic = content.Load<Song>("Audio/music/bgmusic");
@@ -144,7 +150,11 @@ namespace StealthySatan
 
             public static Texture2D[] Muzzle1;
             public static Texture2D[] Muzzle2;
-            
+
+            public static Texture2D Filing1;
+            public static Texture2D Filing2;
+            public static Texture2D Photocopy;
+
             public static Texture2D Tiles;
             public static Texture2D FadingTriangle;
             public static Texture2D FadingRectangle;
