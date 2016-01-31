@@ -114,7 +114,7 @@ namespace StealthySatan.Entities
                         if (WalkSoundDelay <= 0 && OnGround)
                         {
                             WalkSoundDelay = (int)Math.Floor(Resources.Audio.SatanWalk.Duration.TotalSeconds * 60);
-                            Resources.Audio.SatanWalk.CreateInstance().Play();
+                            Resources.Audio.SatanWalk.Play(0.005f, 0.5f, 0.5f);
                         }
                     }
                     else if (InputHandler.IsPressed(InputHandler.Key.Right))
@@ -125,7 +125,7 @@ namespace StealthySatan.Entities
                         if (WalkSoundDelay <= 0 && OnGround)
                         {
                             WalkSoundDelay = (int)Math.Floor(Resources.Audio.SatanWalk.Duration.TotalSeconds * 60);
-                            Resources.Audio.SatanWalk.CreateInstance().Play();
+                            Resources.Audio.SatanWalk.Play(0.005f, 0.5f, 0.5f);
                         }
                     }
                     else

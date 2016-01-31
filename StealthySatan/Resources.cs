@@ -112,7 +112,7 @@ namespace StealthySatan
 
             Audio.SatanJump = content.Load<SoundEffect>("Audio/sfx/Satan/jump");
             Audio.Possession = content.Load<SoundEffect>("Audio/sfx/Satan/possession");
-            Audio.ShadowTransition = content.Load<SoundEffect>("Audio/sfx/Satan/shadow");
+            Audio.ShadowTransition = content.Load<SoundEffect>("Audio/sfx/Satan/shadow2");
             Audio.SatanWalk = content.Load<SoundEffect>("Audio/sfx/Satan/walk");
             Audio.Death = content.Load<SoundEffect>("Audio/sfx/Other/ded");
             Audio.GunShot = content.Load<SoundEffect>("Audio/sfx/Other/gun");
