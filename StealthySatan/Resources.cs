@@ -102,7 +102,7 @@ namespace StealthySatan
             Graphics.Filing1 = content.Load<Texture2D>("Graphics/environment/filing1");
             Graphics.Filing2 = content.Load<Texture2D>("Graphics/environment/filing2");
             Graphics.Photocopy = content.Load<Texture2D>("Graphics/environment/photocopy");
-
+            Graphics.Door = content.Load<Texture2D>("Graphics/door");
 
             //======================================================================
 
@@ -158,6 +158,7 @@ namespace StealthySatan
             public static Texture2D Photocopy;
 
             public static Texture2D Tiles;
+            public static Texture2D Door;
             public static Texture2D FadingTriangle;
             public static Texture2D FadingRectangle;
         }

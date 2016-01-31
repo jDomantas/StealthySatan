@@ -31,7 +31,7 @@ namespace StealthySatan
 
         public void Draw(SpriteBatch sb)
         {
-            sb.Draw(Resources.Graphics.Pixel, new Rectangle(
+            sb.Draw(Resources.Graphics.Door, new Rectangle(
                 (int)((Location.X - 0.2) * Map.ViewScale), 
                 (int)((Location.Y - 0.2) * Map.ViewScale), 
                 (int)(Width * Map.ViewScale), 
