@@ -34,6 +34,8 @@ namespace StealthySatan.Entities
         {
             if (CheckPlayerVisibility())
             {
+                if(ScareTimer <= 0)
+                    Resources.Audio.CivilianScared.CreateInstance().Play();
                 ScareTimer = 120 + Map.Random.Next(60);
                 if (PreserveDirection <= 0 ||
                     Math.Abs(Map.PlayerEntity.Position.X + Map.PlayerEntity.Width/2 - Position.X - Width/2) <= 4)
