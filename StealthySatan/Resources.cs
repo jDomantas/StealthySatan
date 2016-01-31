@@ -47,6 +47,10 @@ namespace StealthySatan
             for (int i = 0; i < 6; i++)
                 Graphics.PossessAnimation[i] = content.Load<Texture2D>("Graphics/possess/possess" + (i + 1));
 
+            Graphics.ManDeath = new Texture2D[4];
+            for (int i = 0; i < 4; i++)
+                Graphics.ManDeath[i] = content.Load<Texture2D>("Graphics/man/death/businessdeth" + (i + 1));
+
             Graphics.Tiles = content.Load<Texture2D>("Graphics/tiles");
 
 
@@ -101,7 +105,8 @@ namespace StealthySatan
             public static Texture2D PossesedManStand;
             public static Texture2D[] PossesedManWalk;
             public static Texture2D[] PossessAnimation;
-            
+            public static Texture2D[] ManDeath;
+
             public static Texture2D[] Cop;
             public static Texture2D[] CopPrep;
             public static Texture2D[] CopGun;

@@ -217,8 +217,8 @@ namespace StealthySatan.Entities
 
             if (CanSeeOther(Map.PlayerEntity))
             {
-                if (AlarmTimer-- < 0)
-                    Map.TriggerAlarm();
+                //if (AlarmTimer-- < 20)
+                Map.TriggerAlarm();
                 return true;
             }
 

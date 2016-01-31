@@ -66,11 +66,12 @@ namespace StealthySatan.Entities
                 return;
 
             DistanceWalked = 0;
-            col.Kill();
             StunTimer = 40;
             DisguiseTimer = 40;
             PossessAnimationTimer = 40;
             Position = new Vector(col.Position.X + col.Width / 2 - Width / 2, col.Position.Y + col.Height - Height);
+            col.Position.Y += 100000;
+            col.Kill();
         }
 
         public override void Update()
@@ -164,9 +165,20 @@ namespace StealthySatan.Entities
                         InForeground = !InForeground;
                     else if (CurrentDisguise != Disguise.Player && CurrentDisguise != Disguise.Invisible)
                     {
+                        var rect = new Rectangle(
+                               (int)Math.Round((Position.X - 1.75) * Map.ViewScale),
+                               (int)Math.Round((Position.Y - 2.757) * Map.ViewScale),
+                               (int)Math.Round(1.6 * 2.7 * Map.ViewScale),
+                               (int)Math.Round(1.6 * 2.7 / 600 * 512 * Map.ViewScale));
+
+                        if (CurrentDisguise == Disguise.Civilian)
+                            Map.AddParticle(new Particle(rect, Resources.Graphics.ManDeath, 25, Facing == Direction.Left));
+                        else if (CurrentDisguise == Disguise.Policeman)
+                            Map.AddParticle(new Particle(rect, Resources.Graphics.ManDeath, 25, Facing == Direction.Left));
+
                         CurrentDisguise = Disguise.Player;
                         StunTimer = 40;
-                        // to do: corpses n animations n shit
+                        DistanceWalked = 0;
                     }
                 }
             }

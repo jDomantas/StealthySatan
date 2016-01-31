@@ -17,6 +17,19 @@ namespace StealthySatan.Entities
             Position = position;
         }
 
+        public override void Kill()
+        {
+            var rect = new Rectangle(
+                      (int)Math.Round((Position.X - Width) * Map.ViewScale),
+                      (int)Math.Round((Position.Y - Height * 0.59) * Map.ViewScale),
+                      (int)Math.Round(Width * 2.7 * Map.ViewScale),
+                      (int)Math.Round(Width * 2.7 / 600 * 512 * Map.ViewScale));
+
+            Map.AddParticle(new Particle(rect, Resources.Graphics.ManDeath, 25, Facing == Direction.Left));
+
+            base.Kill();
+        }
+
         public override void Update()
         {
             if (CheckPlayerVisibility())
