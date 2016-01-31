@@ -22,6 +22,7 @@ namespace StealthySatan.Entities
         private int StunTimer;
         private int PossessAnimationTimer;
         public bool CanSeeThroughDisguise { get { return DisguiseTimer > 0; } }
+        private int WalkSoundDelay;
 
         public Player(Map map) : base(map, 0.9, 0.9)
         {
@@ -84,6 +85,7 @@ namespace StealthySatan.Entities
         {
             if (PossessAnimationTimer > 0) PossessAnimationTimer--;
             if (DisguiseTimer > 0) DisguiseTimer--;
+            if (WalkSoundDelay > 0) WalkSoundDelay--;
 
             if (InForeground && InvisibilityProgress > 0)
                 InvisibilityProgress--;
@@ -109,12 +111,22 @@ namespace StealthySatan.Entities
                         Facing = Direction.Left;
                         Velocity.X -= MoveSpeed;
                         DistanceWalked += MoveSpeed;
+                        if (WalkSoundDelay <= 0 && OnGround)
+                        {
+                            WalkSoundDelay = (int)Math.Floor(Resources.Audio.SatanWalk.Duration.TotalSeconds * 60);
+                            Resources.Audio.SatanWalk.CreateInstance().Play();
+                        }
                     }
                     else if (InputHandler.IsPressed(InputHandler.Key.Right))
                     {
                         Facing = Direction.Right;
                         Velocity.X += MoveSpeed;
                         DistanceWalked += MoveSpeed;
+                        if (WalkSoundDelay <= 0 && OnGround)
+                        {
+                            WalkSoundDelay = (int)Math.Floor(Resources.Audio.SatanWalk.Duration.TotalSeconds * 60);
+                            Resources.Audio.SatanWalk.CreateInstance().Play();
+                        }
                     }
                     else
                         DistanceWalked = 0;
