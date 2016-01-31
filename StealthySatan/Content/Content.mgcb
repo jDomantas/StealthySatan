@@ -1603,3 +1603,9 @@
 /processorParam:Quality=Best
 /build:Audio/music/calm.wav
 
+#begin Audio/sfx/Satan/shadow2.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:Audio/sfx/Satan/shadow2.wav
+
