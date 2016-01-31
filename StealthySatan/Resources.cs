@@ -108,6 +108,19 @@ namespace StealthySatan
             Graphics.Photocopy = content.Load<Texture2D>("Graphics/environment/photocopy");
             Graphics.Door = content.Load<Texture2D>("Graphics/door");
 
+            Graphics.Monologue = new Texture2D[4][];
+            for (int i = 0; i < Graphics.Monologue.Length; i++)
+            {
+                int index = 1;
+                Graphics.Monologue[i] = new Texture2D[100];
+                while (File.Exists($"Content/Graphics/words/words{i + 1}-{index}.xnb"))
+                {
+                    Graphics.Monologue[i][index - 1] = content.Load<Texture2D>($"Graphics/words/words{i + 1}-{index}");
+                    index++;
+                }
+            }
+
+
             //======================================================================
 
             Audio.BackgroundMusic = content.Load<Song>("Audio/music/bgmusic");
@@ -167,6 +180,8 @@ namespace StealthySatan
             public static Texture2D Door;
             public static Texture2D FadingTriangle;
             public static Texture2D FadingRectangle;
+
+            public static Texture2D[][] Monologue;
         }
 
         /// <summary>

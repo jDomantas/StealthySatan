@@ -12,7 +12,7 @@ namespace StealthySatan.Entities
         public enum Disguise { Player, Invisible, Civilian, Policeman }
         private const double Gravity = 0.01;
         private const double MoveSpeed = 0.1;
-        private const double JumpPower = 0.255;
+        private const double JumpPower = 0.26;
         private Vector Velocity;
         private bool LightImmune;
         private int InvisibilityProgress;
@@ -27,8 +27,7 @@ namespace StealthySatan.Entities
         public Player(Map map) : base(map, 0.9, 0.9)
         {
             Velocity = Vector.Zero;
-            //Position = new Vector(5, 5);
-            Position = new Vector(5,10);
+            Position = new Vector(Map.Spawn.X, Map.Spawn.Y);
             CurrentDisguise = Disguise.Player;
         }
 
@@ -47,13 +46,13 @@ namespace StealthySatan.Entities
 
         public void Respawn()
         {
-            //Position = new Vector(1.05, 1.05);
-            Position = new Vector(5, 10);
+            Position = new Vector(Map.Spawn.X, Map.Spawn.Y);
 
+            if (Removed)
+                Map.AddEntity(this);
             Removed = false;
             InForeground = false;
             CurrentDisguise = Disguise.Player;
-            Map.AddEntity(this);
         }
 
         private void CheckForPossesions()
@@ -198,14 +197,15 @@ namespace StealthySatan.Entities
                                (int)Math.Round(1.6 * 2.7 * Map.ViewScale),
                                (int)Math.Round(1.6 * 2.7 / 600 * 512 * Map.ViewScale));
 
+                        Map.CheckDeath(GetCenter());
                         if (CurrentDisguise == Disguise.Civilian)
                         {
-                            Resources.Audio.Death.CreateInstance().Play();
+                            //Resources.Audio.Death.CreateInstance().Play();
                             Map.AddParticle(new Particle(rect, Resources.Graphics.ManDeath, 25, Facing == Direction.Left));
                         }
                         else if (CurrentDisguise == Disguise.Policeman)
                         {
-                            Resources.Audio.Death.CreateInstance().Play();
+                            //Resources.Audio.Death.CreateInstance().Play();
                             Map.AddParticle(new Particle(rect, Resources.Graphics.CopDeath, 25, Facing == Direction.Left));
                         }
 

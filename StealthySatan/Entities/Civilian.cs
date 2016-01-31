@@ -12,9 +12,10 @@ namespace StealthySatan.Entities
         private int WalkTimer, ScareTimer, StairCooldown, PreserveDirection;
         private double MoveSpeed = 0.1;
 
-        public Civilian(Map map, Vector position) : base(map, 1.6, 2.3)
+        public Civilian(Map map, Vector position, bool preventMovement) : base(map, 1.6, 2.3)
         {
             Position = position;
+            if (preventMovement) MoveSpeed = 0;
         }
 
         public override void Kill()

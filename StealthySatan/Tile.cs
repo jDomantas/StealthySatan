@@ -86,7 +86,7 @@ namespace StealthySatan
                 case BlockType.Filing2: sb.Draw(Resources.Graphics.Filing2, new Rectangle(x, y, (int)(Map.ViewScale * 1.2), (int)(Map.ViewScale * 3.2)), new Rectangle(77, 60, 210, 627), Color.White); return;
                 case BlockType.Transparent: return;
                 case BlockType.Photocopy: sb.Draw(Resources.Graphics.Photocopy, new Rectangle((int)(x-120/190.0*Map.ViewScale),(int)(y-120/190.0*Map.ViewScale),(int)(Map.ViewScale*630/190.0), (int)(Map.ViewScale*539/190.0)), Color.White); return;
-                case BlockType.Node: sb.Draw(Resources.Graphics.Nodes[0], new Rectangle(x,y,(int)(Map.ViewScale*2.2),(int)(Map.ViewScale*2.2)),Color.White); return;
+                case BlockType.Node:  return;
                 case BlockType.None: return;
             }
 

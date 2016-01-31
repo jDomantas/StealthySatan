@@ -10,7 +10,7 @@ namespace StealthySatan
     class Map
     {
         public const double TileSize = 1; // never ever change this 
-        public const double ViewScale = 10;//40;
+        public const double ViewScale = 40;
 
         public int WidthInTiles { get; }
         public int HeightInTiles { get; }
@@ -22,14 +22,28 @@ namespace StealthySatan
         private List<Staircase> Staircases;
         private List<Particle> Particles;
 
+        public Vector Spawn;
+
         public Player PlayerEntity { get; private set; }
 
         public Random Random { get; }
 
         private int TicksWithoutPlayer;
+        public bool PlayText;
+        public int NextText;
+        public int CurrentTextFrame;
+        private Vector Pentagram;
+        private int PentagramAnimation;
+
+        public bool Won => PentagramAnimation > 120;
 
         public Map(int width, int height, Texture2D createFrom)
         {
+            NextText = 0;
+            CurrentTextFrame = -1;
+            PlayText = false;
+            Spawn = Vector.Zero;
+
             WidthInTiles = width;
             HeightInTiles = height;
 
@@ -45,6 +59,19 @@ namespace StealthySatan
 
             InitMap(createFrom);
             AddMapObjects();
+
+            for (int x = 0; x < WidthInTiles; x++)
+                for (int y = 0; y < HeightInTiles; y++)
+                {
+                    if (Tiles[x, y].Background == Tile.BlockType.Node)
+                        Pentagram = new Vector(x + 1, y + 1);
+                }
+        }
+
+        public void CheckDeath(Vector point)
+        {
+            if (PentagramAnimation == 0 && (point - Pentagram).LengthSquared < 5 * 5)
+                PentagramAnimation = 1;
         }
 
         private void InitMap(Texture2D texture)
@@ -122,20 +149,20 @@ namespace StealthySatan
             //AddPairOfStairaces(new Vector(30, 6), new Vector(30, 15));
             //AddPairOfStairaces(new Vector(2, 15), new Vector(2, 24));
 
-            Entities.Add(new Policeman(this, new Vector(12, 21), false, false, false));
-            Entities.Add(new Policeman(this, new Vector(11, 36), false, false, true));
-            Entities.Add(new Policeman(this, new Vector(50, 36), false, true, false));
-            
-            Entities.Add(new Civilian(this, new Vector(44, 21)));
-            Entities.Add(new Civilian(this, new Vector(34, 36)));
-            Entities.Add(new Civilian(this, new Vector(68, 20)));
-            Entities.Add(new Civilian(this, new Vector(72, 20)));
-
-            AddPairOfStairaces(new Vector(49, 4), new Vector(49, 21));
-            AddPairOfStairaces(new Vector(8, 21), new Vector(8,36));
+            //Entities.Add(new Policeman(this, new Vector(12, 21), false, false, false));
+            //Entities.Add(new Policeman(this, new Vector(11, 36), false, false, true));
+            //Entities.Add(new Policeman(this, new Vector(50, 36), false, true, false));
+            //
+            //Entities.Add(new Civilian(this, new Vector(44, 21)));
+            //Entities.Add(new Civilian(this, new Vector(34, 36)));
+            //Entities.Add(new Civilian(this, new Vector(68, 20)));
+            //Entities.Add(new Civilian(this, new Vector(72, 20)));
+            //
+            //AddPairOfStairaces(new Vector(49, 4), new Vector(49, 21));
+            //AddPairOfStairaces(new Vector(8, 21), new Vector(8,36));
         }
 
-        private void AddPairOfStairaces(Vector pos1, Vector pos2)
+        public void AddPairOfStairaces(Vector pos1, Vector pos2)
         {
             Staircase first = new Staircase(pos1, null);
             Staircase second = new Staircase(pos2, first);
@@ -227,27 +254,58 @@ namespace StealthySatan
 
         public void Update()
         {
-            if (PlayerEntity.Removed)
+            if (NextText < 4 && CurrentTextFrame > -1 && Resources.Graphics.Monologue[NextText][CurrentTextFrame] != null)
             {
-                TicksWithoutPlayer++;
-                if (TicksWithoutPlayer > 120)
-                    PlayerEntity.Respawn();
+                // show text
+                if (InputHandler.IsTyped(InputHandler.Key.Down) ||
+                    InputHandler.IsTyped(InputHandler.Key.Enter) ||
+                    InputHandler.IsTyped(InputHandler.Key.Hide) || 
+                    InputHandler.IsTyped(InputHandler.Key.Left) ||
+                    InputHandler.IsTyped(InputHandler.Key.Right) ||
+                    InputHandler.IsTyped(InputHandler.Key.Up))
+                {
+                    CurrentTextFrame += 1;
+                    if (Resources.Graphics.Monologue[NextText][CurrentTextFrame] == null)
+                    {
+                        NextText += 1;
+                        CurrentTextFrame = -1;
+                    }
+                }
             }
             else
-                TicksWithoutPlayer = 0;
+            {
+                if (PentagramAnimation > 0) PentagramAnimation++;
 
-            for (int i = Entities.Count - 1; i >= 0; i--)
-                Entities[i].Update();
+                if (PlayText)
+                {
+                    if (NextText == 0) CurrentTextFrame = 0;
+                    else if (NextText == 1 && PlayerEntity.Position.Y > 15) CurrentTextFrame = 0;
+                    else if (NextText == 2 && PlayerEntity.Position.Y > 30) CurrentTextFrame = 0;
+                    else if (NextText == 3 && PentagramAnimation > 60) CurrentTextFrame = 0;
+                }
 
-            Entities.RemoveAll(e => e.Removed);
+                if (PlayerEntity.Removed)
+                {
+                    TicksWithoutPlayer++;
+                    if (TicksWithoutPlayer > 120)
+                        PlayerEntity.Respawn();
+                }
+                else
+                    TicksWithoutPlayer = 0;
 
-            for (int i = Particles.Count - 1; i >= 0; i--)
-                Particles[i].Update();
+                for (int i = Entities.Count - 1; i >= 0; i--)
+                    Entities[i].Update();
 
-            Particles.RemoveAll(e => e.Removed);
+                Entities.RemoveAll(e => e.Removed);
+
+                for (int i = Particles.Count - 1; i >= 0; i--)
+                    Particles[i].Update();
+
+                Particles.RemoveAll(e => e.Removed);
+            }
         }
 
-        public void Draw(SpriteBatch sb)
+        public void Draw(SpriteBatch sb, Vector camera)
         {
             for (int y = HeightInTiles - 1; y >= 0; y--)
                 for (int x = WidthInTiles - 1; x >= 0; x--)
@@ -260,6 +318,9 @@ namespace StealthySatan
                 for (int x = WidthInTiles - 1; x >= 0; x--)
                     Tiles[x, y].DrawBackgroundLayer(sb, x, y);
 
+            sb.Draw(Resources.Graphics.Nodes[Math.Min(PentagramAnimation / 6, 5)],
+                new Rectangle((int)((Pentagram.X - 1.2) * ViewScale), (int)((Pentagram.Y - 1.2) * ViewScale), (int)(ViewScale * 2.2), (int)(ViewScale * 2.2)), Color.White);
+
             for (int i = 0; i < Entities.Count; i++)
                 Entities[i].Draw(sb);
 
@@ -269,6 +330,8 @@ namespace StealthySatan
             for (int y = HeightInTiles - 1; y >= 0; y--)
                 for (int x = WidthInTiles - 1; x >= 0; x--)
                     Tiles[x, y].DrawForegroundLayer(sb, x, y);
+
+            
         }
 
         public void DrawBlend(SpriteBatch sb)
